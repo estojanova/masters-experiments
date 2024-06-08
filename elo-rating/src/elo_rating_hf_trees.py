@@ -5,10 +5,13 @@ import numpy as np
 from river import tree
 from river.datasets import synth
 from sacred.observers import FileStorageObserver
+from sacred.observers import MongoObserver
 
 from sacred import Experiment
 
 ex = Experiment()
+ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
+                                  db_name='sacred'))
 ex.observers.append(FileStorageObserver('../runs'))
 
 

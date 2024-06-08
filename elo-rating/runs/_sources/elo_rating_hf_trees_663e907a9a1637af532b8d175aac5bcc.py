@@ -5,10 +5,13 @@ import numpy as np
 from river import tree
 from river.datasets import synth
 from sacred.observers import FileStorageObserver
+from sacred.observers import MongoObserver
 
 from sacred import Experiment
 
 ex = Experiment()
+ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
+                                  db_name='sacred'))
 ex.observers.append(FileStorageObserver('../runs'))
 
 
@@ -64,7 +67,7 @@ def generate_pairs(_rnd, ensemble):
     return _rnd.sample(pairs, _rnd.randrange(len(pairs)))
 
 
-def train_ensemble(_rnd, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test):
+def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test):
     steps = 0
     for learner in ensemble:
         learner.train_correct_prediction = 0
@@ -101,10 +104,12 @@ def train_ensemble(_rnd, k_factor, rating_width, data_set, ensemble, test_step, 
                 learner2.train_total_observed += 1
         steps += 1
         if steps % test_step == 0:
-            test_ensemble(test_set, ensemble, steps // test_step, nr_samples_test)
+            test_ensemble(_run, test_set, ensemble, steps // test_step, nr_samples_test)
 
 
-def test_ensemble(test_set, ensemble, step_nr, nr_samples_test):
+def test_ensemble(_run, test_set, ensemble, step_nr, nr_samples_test):
+    accuracy_template = "learner{}.accuracy"
+    rating_template = "learner{}.rating"
     accuracy = [0 for i in range(len(ensemble))]
     for learner in ensemble:
         nr_correct = 0
@@ -112,6 +117,9 @@ def test_ensemble(test_set, ensemble, step_nr, nr_samples_test):
             y_pred = learner.model.predict_one(x)
             if y == y_pred:
                 nr_correct+=1
+        learner_accuracy = nr_correct/nr_samples_test
+        _run.log_scalar(accuracy_template.format(learner.id), learner_accuracy, step_nr)
+        _run.log_scalar(rating_template.format(learner.id), learner.rating, step_nr)
         accuracy[learner.id] = nr_correct/nr_samples_test
     print('Accuracy at ', step_nr, ': ', accuracy)
     print('Rating at ', step_nr, ': ',  list(l.rating for l in ensemble))
@@ -122,7 +130,7 @@ def print_initial_state(ensemble):
 
 
 @ex.automain
-def run(_seed, mean_rating, rating_width, k_factor, nr_learners, nr_samples_train, mask_probability,
+def run(_run, _seed, mean_rating, rating_width, k_factor, nr_learners, nr_samples_train, mask_probability,
         nr_samples_test, test_step):
     random.seed(_seed)
     ensemble = list(
@@ -131,4 +139,4 @@ def run(_seed, mean_rating, rating_width, k_factor, nr_learners, nr_samples_trai
     data_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
     test_set = list(synth.SEA(variant=0, seed=_seed).take(nr_samples_test))
     print_initial_state(ensemble)
-    train_ensemble(random, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test)
+    train_ensemble(_run, random, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test)
