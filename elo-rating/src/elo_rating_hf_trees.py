@@ -34,6 +34,9 @@ class ModelWithElo:
     rating: float
     train_correct_prediction: int = 0
     train_total_observed: int = 0
+    games_played: int = 0
+    games_lost: int = 0
+    games_won: int = 0
 
 
 def adjust_rating(k_factor, rating_width, model1: ModelWithElo, model2: ModelWithElo, result_model_1, result_model_2):
@@ -68,16 +71,16 @@ def generate_pairs(_rnd, ensemble):
 
 
 def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test):
-    steps = 0
-    for learner in ensemble:
-        learner.train_correct_prediction = 0
-        learner.train_total_observed = 0
+    step = 0
+
     for x, y in data_set:
         pairs = generate_pairs(_rnd, ensemble)
         for (learner1, learner2) in pairs:
             prediction1 = learner1.model.predict_one(x)
             prediction2 = learner2.model.predict_one(x)
             if y is None:
+                learner1.games_played += 1
+                learner2.games_played += 1
                 if prediction1 is None or prediction2 is None:
                     continue
                 if prediction1 == prediction2:
@@ -85,8 +88,10 @@ def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_
                 else:
                     if learner1.rating > learner2.rating:
                         learner2.model.learn_one(x, prediction1)
+                        learner1.games_won += 1
                     else:
                         learner1.model.learn_one(x, prediction2)
+                        learner2.games_won += 1
             else:
                 learner_1_is_correct = (prediction1 is not None) and (prediction1 == y)
                 learner_2_is_correct = (prediction2 is not None) and (prediction2 == y)
@@ -102,13 +107,31 @@ def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_
                 learner2.train_correct_prediction += (1 if learner_2_is_correct else 0)
                 learner1.train_total_observed += 1
                 learner2.train_total_observed += 1
-        steps += 1
-        if steps % test_step == 0:
-            test_ensemble(_run, test_set, ensemble, steps // test_step, nr_samples_test)
+                log_train_metrics(_run, learner1, step)
+
+        step += 1
+        if step % test_step == 0:
+            test_ensemble(_run, test_set, ensemble, step, nr_samples_test)
+
+
+def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
+    train_accuracy_template = "learner{}.train_accuracy"
+    train_observed_template = "learner{}.train_observed"
+    games_played_template = "learner{}.games_played"
+    games_won_template = "learner{}.games_won"
+    games_lost_template = "learner{}.games_lost"
+    rating_template = "learner{}.rating"
+    _run.log_scalar(train_accuracy_template.format(learner.id),
+                    learner.train_correct_prediction / learner.train_total_observed, step_nr)
+    _run.log_scalar(train_observed_template.format(learner.id), learner.train_total_observed, step_nr)
+    _run.log_scalar(games_played_template.format(learner.id), learner.games_played, step_nr)
+    _run.log_scalar(games_won_template.format(learner.id), learner.games_won, step_nr)
+    _run.log_scalar(games_lost_template.format(learner.id), learner.games_lost, step_nr)
+    _run.log_scalar(rating_template.format(learner.id), learner.rating, step_nr)
 
 
 def test_ensemble(_run, test_set, ensemble, step_nr, nr_samples_test):
-    accuracy_template = "learner{}.accuracy"
+    accuracy_template = "learner{}.test_accuracy"
     rating_template = "learner{}.rating"
     accuracy = [0 for i in range(len(ensemble))]
     for learner in ensemble:
@@ -116,17 +139,18 @@ def test_ensemble(_run, test_set, ensemble, step_nr, nr_samples_test):
         for x, y in test_set:
             y_pred = learner.model.predict_one(x)
             if y == y_pred:
-                nr_correct+=1
-        learner_accuracy = nr_correct/nr_samples_test
+                nr_correct += 1
+        learner_accuracy = nr_correct / nr_samples_test
         _run.log_scalar(accuracy_template.format(learner.id), learner_accuracy, step_nr)
         _run.log_scalar(rating_template.format(learner.id), learner.rating, step_nr)
-        accuracy[learner.id] = nr_correct/nr_samples_test
+        accuracy[learner.id] = nr_correct / nr_samples_test
     print('Accuracy at ', step_nr, ': ', accuracy)
-    print('Rating at ', step_nr, ': ',  list(l.rating for l in ensemble))
+    print('Rating at ', step_nr, ': ', list(l.rating for l in ensemble))
 
 
-def print_initial_state(ensemble):
-    print('Rating at 0: ', list(l.rating for l in ensemble))
+def log_initial_state(_run, ensemble):
+    for learner in ensemble:
+        log_train_metrics(_run, learner, 0)
 
 
 @ex.automain
@@ -138,5 +162,5 @@ def run(_run, _seed, mean_rating, rating_width, k_factor, nr_learners, nr_sample
         range(nr_learners))
     data_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
     test_set = list(synth.SEA(variant=0, seed=_seed).take(nr_samples_test))
-    print_initial_state(ensemble)
+    log_initial_state(ensemble)
     train_ensemble(_run, random, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test)
