@@ -22,7 +22,7 @@ def cfg():
     k_factor = 64
     nr_learners = 4
     nr_samples_train = 200
-    mask_probability = 0.1
+    mask_probability = 0.3
     nr_samples_test = 50
     test_step = 20
 
