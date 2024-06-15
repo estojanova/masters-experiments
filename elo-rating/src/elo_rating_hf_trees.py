@@ -115,14 +115,13 @@ def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_
 
 
 def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
-    train_accuracy_template = "learner{}.train_accuracy"
+    train_accuracy_template = "learner{}.train_correct"
     train_observed_template = "learner{}.train_observed"
     games_played_template = "learner{}.games_played"
     games_won_template = "learner{}.games_won"
     games_lost_template = "learner{}.games_lost"
     rating_template = "learner{}.rating"
-    _run.log_scalar(train_accuracy_template.format(learner.id),
-                    learner.train_correct_prediction / learner.train_total_observed, step_nr)
+    _run.log_scalar(train_accuracy_template.format(learner.id), learner.train_correct_prediction, step_nr)
     _run.log_scalar(train_observed_template.format(learner.id), learner.train_total_observed, step_nr)
     _run.log_scalar(games_played_template.format(learner.id), learner.games_played, step_nr)
     _run.log_scalar(games_won_template.format(learner.id), learner.games_won, step_nr)
