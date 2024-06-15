@@ -20,7 +20,7 @@ def cfg():
     mean_rating = 1500
     rating_width = 400
     k_factor = 64
-    nr_learners = 20
+    nr_learners = 8
     nr_samples_train = 200
     mask_probability = 0.3
     nr_samples_test = 50
@@ -162,5 +162,5 @@ def run(_run, _seed, mean_rating, rating_width, k_factor, nr_learners, nr_sample
         range(nr_learners))
     data_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
     test_set = list(synth.SEA(variant=0, seed=_seed).take(nr_samples_test))
-    log_initial_state(ensemble)
+    log_initial_state(_run, ensemble)
     train_ensemble(_run, random, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test)
