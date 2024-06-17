@@ -20,9 +20,9 @@ def cfg():
     mean_rating = 1500
     rating_width = 400
     k_factor = 64
-    nr_learners = 4
+    nr_learners = 8
     nr_samples_train = 200
-    mask_probability = 0.1
+    mask_probability = 0.5
     nr_samples_test = 50
     test_step = 20
 
@@ -37,6 +37,7 @@ class ModelWithElo:
     games_played: int = 0
     games_lost: int = 0
     games_won: int = 0
+    games_tie: int = 0
 
 
 def adjust_rating(k_factor, rating_width, model1: ModelWithElo, model2: ModelWithElo, result_model_1, result_model_2):
@@ -84,13 +85,17 @@ def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_
                 if prediction1 is None or prediction2 is None:
                     continue
                 if prediction1 == prediction2:
+                    learner1.games_tie += 1
+                    learner2.games_tie += 1
                     continue
                 else:
                     if learner1.rating > learner2.rating:
                         learner2.model.learn_one(x, prediction1)
                         learner1.games_won += 1
+                        learner2.games_lost += 1
                     else:
                         learner1.model.learn_one(x, prediction2)
+                        learner1.games_lost += 1
                         learner2.games_won += 1
             else:
                 learner_1_is_correct = (prediction1 is not None) and (prediction1 == y)
@@ -120,12 +125,14 @@ def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
     games_played_template = "learner{}.games_played"
     games_won_template = "learner{}.games_won"
     games_lost_template = "learner{}.games_lost"
+    games_tie_template = "learner{}.games_tie"
     rating_template = "learner{}.rating"
     _run.log_scalar(train_accuracy_template.format(learner.id), learner.train_correct_prediction, step_nr)
     _run.log_scalar(train_observed_template.format(learner.id), learner.train_total_observed, step_nr)
     _run.log_scalar(games_played_template.format(learner.id), learner.games_played, step_nr)
     _run.log_scalar(games_won_template.format(learner.id), learner.games_won, step_nr)
     _run.log_scalar(games_lost_template.format(learner.id), learner.games_lost, step_nr)
+    _run.log_scalar(games_tie_template.format(learner.id), learner.games_tie, step_nr)
     _run.log_scalar(rating_template.format(learner.id), learner.rating, step_nr)
 
 
