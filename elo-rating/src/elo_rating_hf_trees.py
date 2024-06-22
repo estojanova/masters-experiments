@@ -9,7 +9,7 @@ from sacred.observers import MongoObserver
 
 from sacred import Experiment
 
-ex = Experiment()
+ex = Experiment(name="elo_ensemble")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
 ex.observers.append(FileStorageObserver('../runs'))
@@ -25,6 +25,8 @@ def cfg():
     mask_probability = 0.5
     nr_samples_test = 50
     test_step = 20
+    generate_pairs_strategy = 'random'
+    pick_pairs_strategy = 'random_subset'
 
 
 @dataclass
@@ -59,24 +61,35 @@ def generate_dataset_with_mask(_rnd, _seed, nr_samples: int, mask_prob: float):
     return masked
 
 
-def generate_pairs(_rnd, ensemble):
-    # works only for even nr of elements !
-    all_ids = list(range(0, len(ensemble)))
+def generate_pairs_random(_rnd, ensemble):
+    ensemble_length = len(ensemble)
+    all_ids = list(range(0, ensemble_length))
     _rnd.shuffle(all_ids)
+    # randomly remove 1 element from tail if odd number
+    if ensemble_length % 2 == 1:
+        all_ids.pop()
     id_iterator = iter(all_ids)
     pairs = []
     for id1, id2 in zip(id_iterator, id_iterator):
-        # print(id1, id2)
         pairs.append((ensemble[id1], ensemble[id2]))
-    return _rnd.sample(pairs, _rnd.randrange(len(pairs)))
+    return pairs
 
 
-def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test):
+def pick_pairs(_rnd, pairs, pick_pairs_strategy):
+    if pick_pairs_strategy == 'random_subset':
+        return _rnd.sample(pairs, _rnd.randrange(len(pairs)))
+    if pick_pairs_strategy == 'all':
+        return pairs
+    raise Exception("No pick_pairs_strategy provided")
+
+
+def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test,
+                   generate_pairs_strategy, pick_pairs_strategy):
     step = 0
-
     for x, y in data_set:
-        pairs = generate_pairs(_rnd, ensemble)
-        for (learner1, learner2) in pairs:
+        all_pairs = generate_pairs_random(_rnd, ensemble)
+        play_pairs = pick_pairs(_rnd, all_pairs, pick_pairs_strategy)
+        for (learner1, learner2) in play_pairs:
             prediction1 = learner1.model.predict_one(x)
             prediction2 = learner2.model.predict_one(x)
             if y is None:
@@ -161,7 +174,7 @@ def log_initial_state(_run, ensemble):
 
 @ex.automain
 def run(_run, _seed, mean_rating, rating_width, k_factor, nr_learners, nr_samples_train, mask_probability,
-        nr_samples_test, test_step):
+        nr_samples_test, test_step, generate_pairs_strategy, pick_pairs_strategy):
     random.seed(_seed)
     ensemble = list(
         ModelWithElo(i, tree.HoeffdingTreeClassifier(), random.randint(mean_rating - 200, mean_rating + 200)) for i in
