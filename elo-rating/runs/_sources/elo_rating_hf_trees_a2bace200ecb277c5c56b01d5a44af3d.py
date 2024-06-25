@@ -26,7 +26,7 @@ def cfg():
     nr_samples_test = 50
     test_step = 20
     generate_pairs_strategy = 'random'
-    pick_pairs_strategy = 'all'
+    pick_pairs_strategy = 'random_subset'
 
 
 @dataclass
@@ -155,6 +155,7 @@ def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
 def test_ensemble(_run, test_set, ensemble, step_nr, nr_samples_test):
     accuracy_template = "learner{}.test_accuracy"
     rating_template = "learner{}.rating"
+    accuracy = [0 for i in range(len(ensemble))]
     for learner in ensemble:
         nr_correct = 0
         for x, y in test_set:
@@ -164,6 +165,9 @@ def test_ensemble(_run, test_set, ensemble, step_nr, nr_samples_test):
         learner_accuracy = nr_correct / nr_samples_test
         _run.log_scalar(accuracy_template.format(learner.id), learner_accuracy, step_nr)
         _run.log_scalar(rating_template.format(learner.id), learner.rating, step_nr)
+        accuracy[learner.id] = nr_correct / nr_samples_test
+    print('Accuracy at ', step_nr, ': ', accuracy)
+    print('Rating at ', step_nr, ': ', list(l.rating for l in ensemble))
 
 
 def log_initial_state(_run, ensemble):
@@ -179,6 +183,5 @@ def run(_run, _seed, mean_rating, rating_width, k_factor, nr_learners, nr_sample
         ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
     data_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
     test_set = list(synth.SEA(variant=0, seed=_seed).take(nr_samples_test))
-    # log_initial_state(_run, ensemble)
-    train_ensemble(_run, random, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test,
-                   generate_pairs_strategy, pick_pairs_strategy)
+    log_initial_state(_run, ensemble)
+    train_ensemble(_run, random, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test, generate_pairs_strategy, pick_pairs_strategy)

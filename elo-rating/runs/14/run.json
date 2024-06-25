@@ -1,0 +1,73 @@
+{
+  "artifacts": [],
+  "command": "run",
+  "experiment": {
+    "base_dir": "/Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src",
+    "dependencies": [
+      "numpy==1.26.4",
+      "sacred==0.8.5"
+    ],
+    "mainfile": "elo_rating_hf_trees.py",
+    "name": "elo_rating_hf_trees",
+    "repositories": [
+      {
+        "commit": "3550c33ffbb18618f0e21c45cf2c4c04ecb19d0a",
+        "dirty": true,
+        "url": "https://github.com/estojanova/masters-experiments.git"
+      }
+    ],
+    "sources": [
+      [
+        "elo_rating_hf_trees.py",
+        "_sources/elo_rating_hf_trees_b21aa7f98628c66fa99150c6a4860aae.py"
+      ]
+    ]
+  },
+  "heartbeat": "2024-06-25T20:53:07.795489",
+  "host": {
+    "ENV": {},
+    "cpu": "Apple M2",
+    "hostname": "Elenas-MacBook-Pro.local",
+    "os": [
+      "Darwin",
+      "macOS-14.5-arm64-arm-64bit"
+    ],
+    "python_version": "3.12.3"
+  },
+  "meta": {
+    "command": "run",
+    "config_updates": {},
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [],
+      "help": false,
+      "with": false
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2024-06-25T20:53:07.732828",
+  "status": "COMPLETED",
+  "stop_time": "2024-06-25T20:53:07.793898"
+}
