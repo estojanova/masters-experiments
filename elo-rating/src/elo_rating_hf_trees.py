@@ -189,8 +189,8 @@ def run(_run, _seed, mean_rating, rating_width, k_factor, nr_learners, nr_sample
         ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
     train_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
     test_set = list(synth.SEA(variant=0, seed=_seed).take(nr_samples_test))
-    write_artifact(_run, train_set, 'train_data_set.csv')
-    write_artifact(_run, test_set, 'test_data_set.csv')
+    write_artifact(_run, train_set, 'train_data_set.txt')
+    write_artifact(_run, test_set, 'test_data_set.txt')
     # log_initial_state(_run, ensemble)
     train_ensemble(_run, random, k_factor, rating_width, train_set, ensemble, test_step, test_set, nr_samples_test,
                    generate_pairs_strategy, pick_pairs_strategy)

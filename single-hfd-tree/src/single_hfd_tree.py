@@ -1,4 +1,5 @@
-
+import csv
+import os
 import random
 from river import tree
 from river.datasets import synth
@@ -61,10 +62,20 @@ def test(_run, test_set, learner, step_nr, nr_samples_test):
     _run.log_scalar("test_accuracy", learner_accuracy, step_nr)
 
 
+def write_artifact(_run, data, filename):
+    with open(filename, 'w') as f:
+        write = csv.writer(f)
+        write.writerows(data)
+    _run.add_artifact(filename=filename, name=filename)
+    os.remove(filename)
+
+
 @ex.automain
 def run(_run, _seed, nr_samples_train, mask_probability, nr_samples_test, test_step):
     random.seed(_seed)
     learner = tree.HoeffdingTreeClassifier()
-    data_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
+    train_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
     test_set = list(synth.SEA(variant=0, seed=_seed).take(nr_samples_test))
-    train(_run, random, data_set, test_step, learner, test_set, nr_samples_test)
+    write_artifact(_run, train_set, 'train_data_set.txt')
+    write_artifact(_run, test_set, 'test_data_set.txt')
+    train(_run, random, train_set, test_step, learner, test_set, nr_samples_test)
