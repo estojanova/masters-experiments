@@ -1,0 +1,5 @@
+INFO - elo_rating_hf_trees - Running command 'run'
+INFO - elo_rating_hf_trees - Started run with ID "15"
+Added text/csv as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/train_data_set.csv.
+Added text/csv as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/test_data_set.csv.
+INFO - elo_rating_hf_trees - Completed after 0:00:00
