@@ -26,7 +26,7 @@ def cfg():
     nr_samples_test = 50
     test_step = 20
     generate_pairs_strategy = 'random'
-    pick_pairs_strategy = 'all'
+    pick_pairs_strategy = 'random_subset'
 
 
 @dataclass
@@ -77,7 +77,7 @@ def generate_pairs_random(_rnd, ensemble):
 
 def pick_pairs(_rnd, pairs, pick_pairs_strategy):
     if pick_pairs_strategy == 'random_subset':
-        return _rnd.sample(pairs, _rnd.randrange(len(pairs)))
+        return  _rnd.sample(pairs, _rnd.randrange(len(pairs) + 1))
     if pick_pairs_strategy == 'all':
         return pairs
     raise Exception("No pick_pairs_strategy provided")
