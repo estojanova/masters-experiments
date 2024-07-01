@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    "train_data_set.txt",
+    "test_data_set.txt"
+  ],
+  "command": "run",
+  "experiment": {
+    "base_dir": "/Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src",
+    "dependencies": [
+      "numpy==1.26.4",
+      "sacred==0.8.5"
+    ],
+    "mainfile": "elo_rating_hf_trees.py",
+    "name": "elo_rating_hf_trees",
+    "repositories": [
+      {
+        "commit": "fe987c3887b6a05b75965be9a0524d40eea054b4",
+        "dirty": false,
+        "url": "https://github.com/estojanova/masters-experiments.git"
+      }
+    ],
+    "sources": [
+      [
+        "elo_rating_hf_trees.py",
+        "_sources/elo_rating_hf_trees_42c2db5bfd459a30e5c2fa9f7744c04d.py"
+      ]
+    ]
+  },
+  "heartbeat": "2024-07-01T11:48:08.521287",
+  "host": {
+    "ENV": {},
+    "cpu": "Apple M2",
+    "hostname": "Elenas-MacBook-Pro.local",
+    "os": [
+      "Darwin",
+      "macOS-14.5-arm64-arm-64bit"
+    ],
+    "python_version": "3.12.3"
+  },
+  "meta": {
+    "command": "run",
+    "config_updates": {
+      "mask_probability": 0.3,
+      "nr_samples_train": 2000,
+      "seed": 985393274
+    },
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "seed=985393274",
+        "nr_samples_train=2000",
+        "mask_probability=0.3"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2024-07-01T11:48:08.354092",
+  "status": "COMPLETED",
+  "stop_time": "2024-07-01T11:48:08.519580"
+}
