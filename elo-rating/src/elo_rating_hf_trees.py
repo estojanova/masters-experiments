@@ -24,7 +24,7 @@ def cfg():
     k_factor = 64
     nr_learners = 3
     nr_samples_train = 600
-    mask_probability = 0.3
+    mask_probability = 0.5
     nr_samples_test = 50
     test_step = 20
     generate_pairs_strategy = 'random'
@@ -157,15 +157,15 @@ def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
 def test_ensemble(_run, test_set, ensemble, step_nr, nr_samples_test):
     accuracy_template = "learner{}.test_accuracy"
     rating_template = "learner{}.rating"
-    for x, y in test_set:
+    for learner in ensemble:
         nr_correct = 0
-        for learner in ensemble:
+        for x, y in test_set:
             y_pred = learner.model.predict_one(x)
             if y == y_pred:
                 nr_correct += 1
-            learner_accuracy = nr_correct / nr_samples_test
-            _run.log_scalar(accuracy_template.format(learner.id), learner_accuracy, step_nr)
-            _run.log_scalar(rating_template.format(learner.id), learner.rating, step_nr)
+        learner_accuracy = nr_correct / nr_samples_test
+        _run.log_scalar(accuracy_template.format(learner.id), learner_accuracy, step_nr)
+        _run.log_scalar(rating_template.format(learner.id), learner.rating, step_nr)
 
 
 def log_initial_state(_run, ensemble):
