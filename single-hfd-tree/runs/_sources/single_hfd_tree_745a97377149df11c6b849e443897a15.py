@@ -17,7 +17,7 @@ ex.observers.append(FileStorageObserver('../runs'))
 @ex.config
 def cfg():
     nr_samples_train = 600
-    mask_probability = 0.3
+    mask_probability = 0.5
     nr_samples_test = 50
     test_step = 20
 

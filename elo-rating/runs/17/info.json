@@ -1,0 +1,100 @@
+{
+  "metrics": [
+    {
+      "id": "66817877815c1f80968cc3e0",
+      "name": "learner0.train_correct"
+    },
+    {
+      "id": "66817877815c1f80968cc3e2",
+      "name": "learner0.train_observed"
+    },
+    {
+      "id": "66817877815c1f80968cc3e4",
+      "name": "learner0.games_played"
+    },
+    {
+      "id": "66817877815c1f80968cc3e6",
+      "name": "learner0.games_won"
+    },
+    {
+      "id": "66817877815c1f80968cc3e8",
+      "name": "learner0.games_lost"
+    },
+    {
+      "id": "66817877815c1f80968cc3ea",
+      "name": "learner0.games_tie"
+    },
+    {
+      "id": "66817877815c1f80968cc3ec",
+      "name": "learner0.rating"
+    },
+    {
+      "id": "66817877815c1f80968cc3ee",
+      "name": "learner1.train_correct"
+    },
+    {
+      "id": "66817877815c1f80968cc3f0",
+      "name": "learner1.train_observed"
+    },
+    {
+      "id": "66817877815c1f80968cc3f2",
+      "name": "learner1.games_played"
+    },
+    {
+      "id": "66817877815c1f80968cc3f4",
+      "name": "learner1.games_won"
+    },
+    {
+      "id": "66817877815c1f80968cc3f6",
+      "name": "learner1.games_lost"
+    },
+    {
+      "id": "66817877815c1f80968cc3f8",
+      "name": "learner1.games_tie"
+    },
+    {
+      "id": "66817877815c1f80968cc3fa",
+      "name": "learner1.rating"
+    },
+    {
+      "id": "66817877815c1f80968cc3fc",
+      "name": "learner0.test_accuracy"
+    },
+    {
+      "id": "66817877815c1f80968cc3fe",
+      "name": "learner1.test_accuracy"
+    },
+    {
+      "id": "66817877815c1f80968cc400",
+      "name": "learner2.test_accuracy"
+    },
+    {
+      "id": "66817877815c1f80968cc402",
+      "name": "learner2.rating"
+    },
+    {
+      "id": "66817877815c1f80968cc404",
+      "name": "learner2.train_correct"
+    },
+    {
+      "id": "66817877815c1f80968cc406",
+      "name": "learner2.train_observed"
+    },
+    {
+      "id": "66817877815c1f80968cc408",
+      "name": "learner2.games_played"
+    },
+    {
+      "id": "66817877815c1f80968cc40a",
+      "name": "learner2.games_won"
+    },
+    {
+      "id": "66817877815c1f80968cc40c",
+      "name": "learner2.games_lost"
+    },
+    {
+      "id": "66817877815c1f80968cc40e",
+      "name": "learner2.games_tie"
+    }
+  ]
+}
