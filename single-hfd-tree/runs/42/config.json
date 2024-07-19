@@ -1,0 +1,13 @@
+{
+  "first_leaf_level": 3,
+  "fraction_leaves_per_level": 0.15,
+  "mask_probability": 0.1,
+  "max_tree_depth": 5,
+  "n_cat_features": 1,
+  "n_categories_per_feature": 2,
+  "n_num_features": 1,
+  "nr_samples_test": 50,
+  "nr_samples_train": 5000,
+  "seed": 778252467,
+  "test_step": 20
+}

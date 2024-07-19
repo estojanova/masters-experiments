@@ -1,0 +1,108 @@
+{
+  "metrics": [
+    {
+      "id": "6689aee7a38e7b01df53c970",
+      "name": "learner2.train_correct"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c972",
+      "name": "learner2.train_observed"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c974",
+      "name": "learner2.games_played"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c976",
+      "name": "learner2.games_won"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c978",
+      "name": "learner2.games_lost"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c97a",
+      "name": "learner2.games_tie"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c97c",
+      "name": "learner2.rating"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c97e",
+      "name": "learner1.train_correct"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c980",
+      "name": "learner1.train_observed"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c982",
+      "name": "learner1.games_played"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c984",
+      "name": "learner1.games_won"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c986",
+      "name": "learner1.games_lost"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c988",
+      "name": "learner1.games_tie"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c98a",
+      "name": "learner1.rating"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c98c",
+      "name": "learner0.train_correct"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c98e",
+      "name": "learner0.train_observed"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c990",
+      "name": "learner0.games_played"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c992",
+      "name": "learner0.games_won"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c994",
+      "name": "learner0.games_lost"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c996",
+      "name": "learner0.games_tie"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c998",
+      "name": "learner0.rating"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c99a",
+      "name": "learner0.test_accuracy"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c99c",
+      "name": "learner1.test_accuracy"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c99e",
+      "name": "learner2.test_accuracy"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c9a0",
+      "name": "ensemble.best_rated_accuracy"
+    },
+    {
+      "id": "6689aee7a38e7b01df53c9a2",
+      "name": "ensemble.majority_accuracy"
+    }
+  ]
+}

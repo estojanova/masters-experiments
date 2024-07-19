@@ -1,0 +1,108 @@
+{
+  "metrics": [
+    {
+      "id": "6689aeaca38e7b01df53c8fc",
+      "name": "learner2.train_correct"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c8fe",
+      "name": "learner2.train_observed"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c900",
+      "name": "learner2.games_played"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c902",
+      "name": "learner2.games_won"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c904",
+      "name": "learner2.games_lost"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c906",
+      "name": "learner2.games_tie"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c908",
+      "name": "learner2.rating"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c90a",
+      "name": "learner0.test_accuracy"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c90c",
+      "name": "learner0.rating"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c90e",
+      "name": "learner1.test_accuracy"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c910",
+      "name": "learner1.rating"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c912",
+      "name": "learner2.test_accuracy"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c914",
+      "name": "ensemble.best_rated_accuracy"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c916",
+      "name": "ensemble.majority_accuracy"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c918",
+      "name": "learner1.train_correct"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c91a",
+      "name": "learner1.train_observed"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c91c",
+      "name": "learner1.games_played"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c91e",
+      "name": "learner1.games_won"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c920",
+      "name": "learner1.games_lost"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c922",
+      "name": "learner1.games_tie"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c924",
+      "name": "learner0.train_correct"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c926",
+      "name": "learner0.train_observed"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c928",
+      "name": "learner0.games_played"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c92a",
+      "name": "learner0.games_won"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c92c",
+      "name": "learner0.games_lost"
+    },
+    {
+      "id": "6689aeaca38e7b01df53c92e",
+      "name": "learner0.games_tie"
+    }
+  ]
+}
