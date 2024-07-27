@@ -19,6 +19,9 @@ ex.observers.append(FileStorageObserver('../runs'))
 
 @ex.config
 def cfg():
+    meta_experiment = 'none'
+    train_data_set = []
+    test_data_set = []
     rating_width = 400
     k_factor = 64
     nr_learners = 3
@@ -28,12 +31,6 @@ def cfg():
     test_step = 20
     generate_pairs_strategy = 'random'
     pick_pairs_strategy = 'random_subset'
-    n_num_features = 1
-    n_cat_features = 1
-    n_categories_per_feature = 2
-    max_tree_depth = 5
-    first_leaf_level = 3
-    fraction_leaves_per_level = 0.15
 
 
 @dataclass
@@ -55,34 +52,6 @@ def adjust_rating(k_factor, rating_width, model1: ModelWithElo, model2: ModelWit
     model1.rating += k_factor * (result_model_1 - expected_win_model_1)
     model2.rating -= k_factor * (result_model_2 - expected_win_model_2)
 
-
-# not very efficient for start, but is OK for small datasets
-def generate_dataset_with_mask(_rnd, _seed, n_num_features: int, n_cat_features: int, n_categories_per_feature: int,
-                               max_tree_depth: int, first_leaf_level: int, fraction_leaves_per_level: float, nr_samples: int, mask_prob: float):
-    orig = synth.RandomTree(seed_tree=_seed, seed_sample=_seed, n_classes=2, n_num_features=n_num_features,
-                            n_cat_features=n_cat_features, n_categories_per_feature=n_categories_per_feature,
-                            max_tree_depth=max_tree_depth, first_leaf_level=first_leaf_level,
-                            fraction_leaves_per_level=fraction_leaves_per_level).take(nr_samples)
-    masked = []
-    for x, y in orig:
-        if _rnd.random() < mask_prob:
-            masked.append((x, None))
-        else:
-            masked.append((x, True if y == 1 else False))
-    return masked
-
-
-def generate_test_set(_rnd, _seed, n_num_features: int, n_cat_features: int, n_categories_per_feature: int,
-                      max_tree_depth: int, first_leaf_level: int, fraction_leaves_per_level: float, nr_samples: int):
-
-    orig = synth.RandomTree(seed_tree=_seed, seed_sample=_seed - 7, n_classes=2, n_num_features=n_num_features,
-                            n_cat_features=n_cat_features, n_categories_per_feature=n_categories_per_feature,
-                            max_tree_depth=max_tree_depth, first_leaf_level=first_leaf_level,
-                            fraction_leaves_per_level=fraction_leaves_per_level).take(nr_samples)
-    with_replaced_classes = []
-    for x, y in orig:
-        with_replaced_classes.append((x, True if y == 1 else False))
-    return with_replaced_classes
 
 def generate_pairs_random(_rnd, ensemble):
     ensemble_length = len(ensemble)
@@ -226,28 +195,11 @@ def log_initial_state(_run, ensemble):
         log_train_metrics(_run, learner, 0)
 
 
-def write_artifact(_run, data, filename):
-    with open(filename, 'w') as f:
-        write = csv.writer(f)
-        write.writerows(data)
-    _run.add_artifact(filename=filename, name=filename)
-    os.remove(filename)
-
-
 @ex.automain
-def run(_run, _seed, rating_width, k_factor, nr_learners, nr_samples_train, mask_probability, nr_samples_test,
-        test_step, generate_pairs_strategy, pick_pairs_strategy, n_num_features, n_cat_features,
-        n_categories_per_feature, max_tree_depth, first_leaf_level, fraction_leaves_per_level):
+def run(_run, _seed, meta_experiment, train_data_set, test_data_set, rating_width, k_factor, nr_learners, nr_samples_train, mask_probability, nr_samples_test,
+        test_step, generate_pairs_strategy, pick_pairs_strategy):
     random.seed(_seed)
     ensemble = list(
         ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
-    train_set = generate_dataset_with_mask(random, _seed, n_num_features, n_cat_features, n_categories_per_feature,
-                                           max_tree_depth, first_leaf_level, fraction_leaves_per_level,
-                                           nr_samples_train, mask_probability)
-    test_set = generate_test_set(random, _seed, n_num_features, n_cat_features, n_categories_per_feature,
-                                 max_tree_depth, first_leaf_level, fraction_leaves_per_level, nr_samples_test)
-    write_artifact(_run, train_set, 'train_data_set.txt')
-    write_artifact(_run, test_set, 'test_data_set.txt')
-    # log_initial_state(_run, ensemble)
-    train_ensemble(_run, random, k_factor, rating_width, train_set, ensemble, test_step, test_set, nr_samples_test,
+    train_ensemble(_run, random, k_factor, rating_width, train_data_set, ensemble, test_step, test_data_set, nr_samples_test,
                    generate_pairs_strategy, pick_pairs_strategy)

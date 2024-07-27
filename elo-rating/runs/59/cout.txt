@@ -1,0 +1,9 @@
+INFO - meta_elo_rating - Running command 'run'
+INFO - meta_elo_rating - Started run with ID "59"
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/906e29a0-1213-4f55-84ea-1da242abe8e1_train_data_set.txt.
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/906e29a0-1213-4f55-84ea-1da242abe8e1_test_data_set.txt.
+INFO - elo_rating_hf_trees_random_tree_dataset - Running command 'run'
+INFO - elo_rating_hf_trees_random_tree_dataset - Started run with ID "60"
+INFO - elo_rating_hf_trees_random_tree_dataset - Completed after 0:00:00
+60
+INFO - meta_elo_rating - Completed after 0:00:00

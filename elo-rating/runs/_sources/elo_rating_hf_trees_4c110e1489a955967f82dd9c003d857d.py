@@ -11,7 +11,7 @@ from sacred.observers import MongoObserver
 
 from sacred import Experiment
 
-ex = Experiment(name="elo_rating_hf_trees_sea_dataset")
+ex = Experiment(name="elo_rating_hf_trees_random_tree_dataset")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
 ex.observers.append(FileStorageObserver('../runs'))
@@ -20,7 +20,8 @@ ex.observers.append(FileStorageObserver('../runs'))
 @ex.config
 def cfg():
     meta_experiment = 'none'
-    mean_rating = 1500
+    train_data_set = []
+    test_data_set = []
     rating_width = 400
     k_factor = 64
     nr_learners = 3
@@ -50,18 +51,6 @@ def adjust_rating(k_factor, rating_width, model1: ModelWithElo, model2: ModelWit
     expected_win_model_2 = 1 - expected_win_model_1
     model1.rating += k_factor * (result_model_1 - expected_win_model_1)
     model2.rating -= k_factor * (result_model_2 - expected_win_model_2)
-
-
-# not very efficient for start, but is OK for small datasets
-def generate_dataset_with_mask(_rnd, _seed, nr_samples: int, mask_prob: float):
-    orig = synth.SEA(variant=0, seed=_seed).take(nr_samples)
-    masked = []
-    for x, y in orig:
-        if _rnd.random() < mask_prob:
-            masked.append((x, None))
-        else:
-            masked.append((x, y))
-    return masked
 
 
 def generate_pairs_random(_rnd, ensemble):
@@ -206,24 +195,11 @@ def log_initial_state(_run, ensemble):
         log_train_metrics(_run, learner, 0)
 
 
-def write_artifact(_run, data, filename):
-    with open(filename, 'w') as f:
-        write = csv.writer(f)
-        write.writerows(data)
-    _run.add_artifact(filename=filename, name=filename)
-    os.remove(filename)
-
-
 @ex.automain
-def run(_run, _seed, mean_rating, rating_width, k_factor, nr_learners, nr_samples_train, mask_probability,
-        nr_samples_test, test_step, generate_pairs_strategy, pick_pairs_strategy):
+def run(_run, _seed, meta_experiment, train_data_set, test_data_set, rating_width, k_factor, nr_learners, nr_samples_train, mask_probability, nr_samples_test,
+        test_step, generate_pairs_strategy, pick_pairs_strategy):
     random.seed(_seed)
     ensemble = list(
         ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
-    train_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
-    test_set = list(synth.SEA(variant=0, seed=(_seed - 7)).take(nr_samples_test))
-    write_artifact(_run, train_set, 'train_data_set.txt')
-    write_artifact(_run, test_set, 'test_data_set.txt')
-    # log_initial_state(_run, ensemble)
-    train_ensemble(_run, random, k_factor, rating_width, train_set, ensemble, test_step, test_set, nr_samples_test,
+    train_ensemble(_run, random, k_factor, rating_width, train_data_set, ensemble, test_step, test_data_set, nr_samples_test,
                    generate_pairs_strategy, pick_pairs_strategy)
