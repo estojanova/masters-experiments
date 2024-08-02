@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 import csv
 import os
 import random
@@ -29,8 +27,8 @@ def write_artifact(_run, data, meta_uuid, filename):
 
 # not very efficient for start, but is OK for small datasets
 def generate_train_set(_rnd, _seed, n_num_features: int, n_cat_features: int, n_categories_per_feature: int,
-                               max_tree_depth: int, first_leaf_level: int, fraction_leaves_per_level: float,
-                               nr_samples: int, mask_prob: float):
+                       max_tree_depth: int, first_leaf_level: int, fraction_leaves_per_level: float,
+                       nr_samples: int, mask_prob: float):
     orig = synth.RandomTree(seed_tree=_seed, seed_sample=_seed, n_classes=2, n_num_features=n_num_features,
                             n_cat_features=n_cat_features, n_categories_per_feature=n_categories_per_feature,
                             max_tree_depth=max_tree_depth, first_leaf_level=first_leaf_level,
@@ -89,9 +87,10 @@ def cfg():
 def run(_run, _seed, nr_samples_train, mask_probability, nr_samples_test, test_step, n_num_features, n_cat_features,
         n_categories_per_feature, max_tree_depth, first_leaf_level, fraction_leaves_per_level):
     meta_uuid = str(uuid.uuid4())
+    random.seed(_seed)
     train_set = generate_train_set(random, _seed, n_num_features, n_cat_features, n_categories_per_feature,
-                                           max_tree_depth, first_leaf_level, fraction_leaves_per_level,
-                                           nr_samples_train, mask_probability)
+                                   max_tree_depth, first_leaf_level, fraction_leaves_per_level,
+                                   nr_samples_train, mask_probability)
     test_set = generate_test_set(random, _seed, n_num_features, n_cat_features, n_categories_per_feature,
                                  max_tree_depth, first_leaf_level, fraction_leaves_per_level, nr_samples_test)
     write_artifact(_run, train_set, meta_uuid, 'train_data_set.txt')
