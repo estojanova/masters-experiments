@@ -85,13 +85,13 @@ def run(_run, _seed, nr_samples_train, mask_probability, nr_samples_test, test_s
         meta_experiment=meta_uuid,
         train_data_set=train_set_mask,
         test_data_set=test_set_adapted,
+        nr_samples_train=nr_samples_train,
+        nr_samples_test=nr_samples_test,
+        test_step=test_step,
+        mask_probability=mask_probability,
         rating_width=400,
         k_factor=64,
         nr_learners=3,
-        nr_samples_train=nr_samples_train,
-        mask_probability=mask_probability,
-        nr_samples_test=nr_samples_test,
-        test_step=test_step,
         pick_pairs_strategy='random_subset')
     sub_experiment.run()
     collect_metrics(meta_uuid)

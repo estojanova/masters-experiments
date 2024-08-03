@@ -73,7 +73,7 @@ def run(_run, _seed, nr_samples_train, mask_probability, nr_samples_test, test_s
         nr_samples_train=nr_samples_train,
         nr_samples_test=nr_samples_test,
         test_step=test_step,
-        mask_probability = mask_probability,
+        mask_probability=mask_probability,
         rating_width=400,
         k_factor=64,
         nr_learners=3,
