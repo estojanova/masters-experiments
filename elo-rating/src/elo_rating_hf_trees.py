@@ -98,10 +98,10 @@ def train_pair(x, y, learner1: ModelWithElo, learner2: ModelWithElo, k_factor, r
     learner2.train_total_observed += 1
 
 
-def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test,
-                   pick_pairs_strategy):
+def train(_run, _rnd, k_factor, rating_width, train_set, ensemble, test_step, test_set, nr_samples_test,
+          pick_pairs_strategy):
     step = 0
-    for x, y in data_set:
+    for x, y in train_set:
         all_pairs = generate_pairs_random(_rnd, ensemble)
         play_pairs = pick_pairs(_rnd, all_pairs, pick_pairs_strategy)
         for (learner1, learner2) in play_pairs:
@@ -116,6 +116,28 @@ def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_
             test(_run, test_set, ensemble, step, nr_samples_test)
 
 
+def test(_run, test_set, ensemble, step_nr, nr_samples_test):
+    nr_learners = len(ensemble)
+    individual_correct_counts = list(0 for i in range(nr_learners))
+    majority_correct_count = 0
+    best_rated_correct_count = 0
+    best_rated_learner = sorted(ensemble, key=lambda l: l.rating, reverse=True)[0]
+    for x, y in test_set:
+        predictions = list((learner.id, learner.model.predict_one(x)) for learner in ensemble)
+        true_count = 0
+        for (learner_id, prediction) in predictions:
+            individual_correct_counts[learner_id] += (1 if prediction is not None and prediction == y else 0)
+            true_count += (1 if prediction is True else 0)
+        majority_prediction = True if true_count >= (nr_learners / 2) else False
+        majority_correct_count += (1 if majority_prediction == y else 0)
+        best_rated_correct_count += (1 if best_rated_learner.model.predict_one(x) == y else 0)
+    for learner in ensemble:
+        _run.log_scalar("learner{}.test_accuracy".format(learner.id), individual_correct_counts[learner.id] / nr_samples_test, step_nr)
+        _run.log_scalar("learner{}.relative_rating".format(learner.id), learner.rating / best_rated_learner.rating, step_nr)
+    _run.log_scalar("ensemble.best_rated_accuracy", best_rated_correct_count / nr_samples_test, step_nr)
+    _run.log_scalar("ensemble.majority_accuracy", majority_correct_count / nr_samples_test, step_nr)
+
+
 def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
     _run.log_scalar("learner{}.train_correct".format(learner.id), learner.train_correct_prediction, step_nr)
     _run.log_scalar("learner{}.train_observed".format(learner.id), learner.train_total_observed, step_nr)
@@ -126,32 +148,10 @@ def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
     _run.log_scalar("learner{}.rating".format(learner.id), learner.rating, step_nr)
 
 
-def test(_run, test_set, ensemble, step_nr, nr_samples_test):
-    nr_learners = len(ensemble)
-    individual_correct_counts = list(0 for i in range(nr_learners))
-    majority_correct_count = 0
-    best_rated_correct_count = 0
-    best_rated_learner = sorted(ensemble, key=lambda l: l.rating, reverse=True)[0]
-    for x, y in test_set:
-        predictions = list((learner.id, learner.predictOne(x)) for learner in ensemble)
-        true_count = 0
-        for (learner_id, prediction) in predictions:
-            individual_correct_counts[learner_id] += (1 if prediction is not None and prediction == y else 0)
-            true_count += (1 if prediction is True else 0)
-            majority_prediction = True if true_count >= (nr_learners / 2) else False
-            majority_correct_count += (1 if majority_prediction == y else 0)
-            best_rated_correct_count += (1 if best_rated_learner.predictOne(x) == y else 0)
-    for learner in ensemble:
-        _run.log_scalar("learner{}.test_accuracy".format(learner.id), individual_correct_counts[learner.id] / nr_samples_test, step_nr)
-        _run.log_scalar("learner{}.relative_rating".format(learner.id), learner.rating / best_rated_learner.rating, step_nr)
-    _run.log_scalar("ensemble.best_rated_accuracy", best_rated_correct_count / nr_samples_test, step_nr)
-    _run.log_scalar("ensemble.majority_accuracy", majority_correct_count / nr_samples_test, step_nr)
-
-
 @ex.automain
 def run(_run, _seed, meta_experiment, train_data_set, test_data_set, nr_samples_train, nr_samples_test, test_step,
         mask_probability, rating_width, k_factor, nr_learners, pick_pairs_strategy):
     random.seed(_seed)
     ensemble = list(ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
-    train_ensemble(_run, random, k_factor, rating_width, train_data_set, ensemble, test_step, test_data_set,
-                   nr_samples_test, pick_pairs_strategy)
+    train(_run, random, k_factor, rating_width, train_data_set, ensemble, test_step, test_data_set,
+          nr_samples_test, pick_pairs_strategy)
