@@ -7,10 +7,10 @@ from sacred.observers import FileStorageObserver
 from sacred.observers import MongoObserver
 
 from sacred import Experiment
-from elo_rating_hf_trees import ex as sub_experiment
+from elo_ensemble_hf_trees import ex as sub_experiment
 from pymongo import MongoClient
 
-ex = Experiment(name="meta_elo_rating")
+ex = Experiment(name="elo_random_tree_dataset")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
 ex.observers.append(FileStorageObserver('../runs'))

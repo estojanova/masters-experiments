@@ -8,7 +8,7 @@ from sacred.observers import MongoObserver
 
 from sacred import Experiment
 
-ex = Experiment(name="elo_rating_hf_trees_train")
+ex = Experiment(name="elo_ensemble_hf_trees_train")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
 ex.observers.append(FileStorageObserver('../runs'))
