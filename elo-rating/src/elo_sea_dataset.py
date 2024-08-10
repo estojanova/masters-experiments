@@ -50,8 +50,6 @@ def collect_metrics(meta_uuid, _run):
                     "values")
                 best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
                     0].get("values")
-                print(majority_accuracy)
-                print(best_rated_accuracy)
                 majority_accuracies.append(majority_accuracy)
                 best_rated_accuracies.append(best_rated_accuracy)
 
@@ -74,12 +72,12 @@ def cfg():
     nr_samples_test = 50
     test_step = 20
     nr_learners = 3
-    pairing_strategy = 'all'
+    pick_pairs_strategy = 'all'
 
 
 @ex.automain
 def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, nr_samples_test, test_step, nr_learners,
-        pairing_strategy):
+        pick_pairs_strategy):
     meta_uuid = str(uuid.uuid4())
     random.seed(_seed)
     train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test, mask_probability)
@@ -100,7 +98,7 @@ def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, 
             rating_width=400,
             k_factor=64,
             nr_learners=nr_learners,
-            pick_pairs_strategy=pairing_strategy)
+            pick_pairs_strategy=pick_pairs_strategy)
         training_exp.run()
         run_count += 1
     collect_metrics(meta_uuid, _run)

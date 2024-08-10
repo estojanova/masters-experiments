@@ -2,12 +2,13 @@ import csv
 import os
 import random
 import uuid
+import numpy as np
 from river.datasets import synth
 from sacred.observers import FileStorageObserver
 from sacred.observers import MongoObserver
 
 from sacred import Experiment
-from elo_ensemble_hf_trees import ex as sub_experiment
+from elo_ensemble_hf_trees import ex as training_exp
 from pymongo import MongoClient
 
 ex = Experiment(name="elo_random_tree_dataset")
@@ -37,38 +38,58 @@ def generate_data_sets(_rnd, _seed, n_num_features: int, n_cat_features: int, n_
     return generated[:nr_samples_train], generated[nr_samples_train:]
 
 
-def collect_metrics(meta_uuid):
+def collect_metrics(meta_uuid, _run):
+    uri = "mongodb://mongo_user:mongo_password@127.0.0.1:27017/?authSource=admin"
     try:
-        uri = "mongodb://mongo_user:mongo_password@127.0.0.1:27017/?authSource=admin"
-        client = MongoClient(uri)
-        database = client["sacred"]
-        collection = database["runs"]
-        sub_runs = collection.find({"config.meta_experiment": meta_uuid})
-        for sub_run in sub_runs:
-            print(sub_run.get("_id"))
-        client.close()
+        with MongoClient(uri) as client:
+            database = client["sacred"]
+            runs = database["runs"]
+            metrics = database["metrics"]
+            sub_runs = runs.find({"config.meta_experiment": meta_uuid})
+            majority_accuracies = []
+            best_rated_accuracies = []
+
+            for sub_run in sub_runs:
+                sub_run_id = sub_run.get("_id")
+                majority_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_accuracy"})[0].get(
+                    "values")
+                best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
+                    0].get("values")
+                majority_accuracies.append(majority_accuracy)
+                best_rated_accuracies.append(best_rated_accuracy)
+
+            average_majority_accuracy = np.mean(np.array(majority_accuracies), axis=0)
+            average_best_rated_accuracy = np.mean(np.array(best_rated_accuracies), axis=0)
+            for index, value in enumerate(average_majority_accuracy.tolist()):
+                _run.log_scalar("average_majority_accuracy", value, index + 1)
+            for index, value in enumerate(average_best_rated_accuracy.tolist()):
+                _run.log_scalar("average_best_rated_accuracy", value, index + 1)
+
     except Exception as e:
         raise Exception("Error collecting data from Mongo: ", e)
 
 
 @ex.config
 def cfg():
-    nr_of_runs_per_config = 5
     n_num_features = 1
     n_cat_features = 1
     n_categories_per_feature = 2
     max_tree_depth = 5
     first_leaf_level = 3
     fraction_leaves_per_level = 0.15
+    nr_of_runs_per_config = 5
     nr_samples_train = 600
     mask_probability = 0.5
     nr_samples_test = 50
     test_step = 20
+    nr_learners = 3
+    pick_pairs_strategy = 'all'
 
 
 @ex.automain
-def run(_run, _seed, nr_samples_train, mask_probability, nr_samples_test, test_step, n_num_features, n_cat_features,
-        n_categories_per_feature, max_tree_depth, first_leaf_level, fraction_leaves_per_level):
+def run(_run, _seed, n_num_features, n_cat_features, n_categories_per_feature, max_tree_depth, first_leaf_level,
+        fraction_leaves_per_level, nr_of_runs_per_config, nr_samples_train, mask_probability, nr_samples_test,
+        test_step, nr_learners, pick_pairs_strategy):
     meta_uuid = str(uuid.uuid4())
     random.seed(_seed)
     train_set, test_set = generate_data_sets(random, _seed, n_num_features, n_cat_features, n_categories_per_feature,
@@ -80,18 +101,20 @@ def run(_run, _seed, nr_samples_train, mask_probability, nr_samples_test, test_s
     test_set_adapted = [(x, True if y == 1 else False) for (x, y) in test_set]
     write_artifact(_run, train_set_mask, meta_uuid, 'train_data_set.txt')
     write_artifact(_run, test_set_adapted, meta_uuid, 'test_data_set.txt')
-
-    sub_experiment.add_config(
-        meta_experiment=meta_uuid,
-        train_data_set=train_set_mask,
-        test_data_set=test_set_adapted,
-        nr_samples_train=nr_samples_train,
-        nr_samples_test=nr_samples_test,
-        test_step=test_step,
-        mask_probability=mask_probability,
-        rating_width=400,
-        k_factor=64,
-        nr_learners=3,
-        pick_pairs_strategy='random_subset')
-    sub_experiment.run()
-    collect_metrics(meta_uuid)
+    run_count = 0
+    while run_count < nr_of_runs_per_config:
+        training_exp.add_config(
+            meta_experiment=meta_uuid,
+            train_data_set=train_set_mask,
+            test_data_set=test_set_adapted,
+            nr_samples_train=nr_samples_train,
+            nr_samples_test=nr_samples_test,
+            test_step=test_step,
+            mask_probability=mask_probability,
+            rating_width=400,
+            k_factor=64,
+            nr_learners=nr_learners,
+            pick_pairs_strategy=pick_pairs_strategy)
+        training_exp.run()
+        run_count += 1
+    collect_metrics(meta_uuid, _run)
