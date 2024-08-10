@@ -78,7 +78,8 @@ def cfg():
 
 
 @ex.automain
-def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, nr_samples_test, test_step, nr_learners, pairing_strategy):
+def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, nr_samples_test, test_step, nr_learners,
+        pairing_strategy):
     meta_uuid = str(uuid.uuid4())
     random.seed(_seed)
     train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test, mask_probability)
@@ -101,4 +102,5 @@ def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, 
             nr_learners=nr_learners,
             pick_pairs_strategy=pairing_strategy)
         training_exp.run()
+        run_count += 1
     collect_metrics(meta_uuid, _run)
