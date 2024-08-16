@@ -8,7 +8,8 @@ from sacred.observers import FileStorageObserver
 from sacred.observers import MongoObserver
 
 from sacred import Experiment
-from elo_ensemble_hf_trees import ex as training_exp
+from train_elo_ensemble_hfd import ex as elo_training_exp
+from train_single_hfd import ex as single_training_exp
 from pymongo import MongoClient
 
 ex = Experiment(name="elo_sea_dataset")
@@ -46,19 +47,26 @@ def collect_metrics(meta_uuid, _run):
 
             for sub_run in sub_runs:
                 sub_run_id = sub_run.get("_id")
-                majority_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_accuracy"})[0].get(
-                    "values")
-                best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
-                    0].get("values")
-                majority_accuracies.append(majority_accuracy)
-                best_rated_accuracies.append(best_rated_accuracy)
+                sub_run_name = sub_run.get("experiment").get("name")
+                if sub_run_name == "single_hfd_train":
+                    single_accuracy = metrics.find({"run_id": sub_run_id, "name": "test_accuracy"})[0].get(
+                        "values")
+                    for index, value in enumerate(single_accuracy):
+                        _run.log_scalar("single.test_accuracy", value, index + 1)
+                if sub_run_name == "elo_ensemble_hfd_train":
+                    majority_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_accuracy"})[
+                        0].get("values")
+                    best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
+                        0].get("values")
+                    majority_accuracies.append(majority_accuracy)
+                    best_rated_accuracies.append(best_rated_accuracy)
 
             average_majority_accuracy = np.mean(np.array(majority_accuracies), axis=0)
             average_best_rated_accuracy = np.mean(np.array(best_rated_accuracies), axis=0)
             for index, value in enumerate(average_majority_accuracy.tolist()):
-                _run.log_scalar("average_majority_accuracy", value, index + 1)
+                _run.log_scalar("ensemble.average_majority_accuracy", value, index + 1)
             for index, value in enumerate(average_best_rated_accuracy.tolist()):
-                _run.log_scalar("average_best_rated_accuracy", value, index + 1)
+                _run.log_scalar("ensemble.average_best_rated_accuracy", value, index + 1)
 
     except Exception as e:
         raise Exception("Error collecting data from Mongo: ", e)
@@ -80,14 +88,28 @@ def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, 
         pick_pairs_strategy):
     meta_uuid = str(uuid.uuid4())
     random.seed(_seed)
+    # generate train & test sets
     train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test, mask_probability)
-    # apply mask to train set to remove labels
     train_set_mask = [(x, None) if random.random() < mask_probability else (x, y) for (x, y) in train_set]
     write_artifact(_run, train_set_mask, meta_uuid, 'train_data_set.txt')
     write_artifact(_run, test_set, meta_uuid, 'test_data_set.txt')
+
+    # run single learner for benchmark
+    single_training_exp.add_config(
+        meta_experiment=meta_uuid,
+        train_data_set=train_set_mask,
+        test_data_set=test_set,
+        nr_samples_train=nr_samples_train,
+        nr_samples_test=nr_samples_test,
+        test_step=test_step,
+        mask_probability=mask_probability,
+    )
+    single_training_exp.run()
+
+    # run multiple training sessions as per configuration of elo ensemble
     run_count = 0
     while run_count < nr_of_runs_per_config:
-        training_exp.add_config(
+        elo_training_exp.add_config(
             meta_experiment=meta_uuid,
             train_data_set=train_set_mask,
             test_data_set=test_set,
@@ -99,6 +121,6 @@ def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, 
             k_factor=64,
             nr_learners=nr_learners,
             pick_pairs_strategy=pick_pairs_strategy)
-        training_exp.run()
+        elo_training_exp.run()
         run_count += 1
     collect_metrics(meta_uuid, _run)
