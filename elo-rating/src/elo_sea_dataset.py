@@ -72,19 +72,8 @@ def collect_metrics(meta_uuid, _run):
         raise Exception("Error collecting data from Mongo: ", e)
 
 
-@ex.config
-def cfg():
-    nr_of_runs_per_config = 5
-    nr_samples_train = 600
-    mask_probability = 0.5
-    nr_samples_test = 50
-    test_step = 20
-    nr_learners = 3
-    pick_pairs_strategy = 'all'
-
-
 @ex.automain
-def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, nr_samples_test, test_step, nr_learners,
+def run(_run, _seed, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test, test_step, nr_learners,
         pick_pairs_strategy):
     meta_uuid = str(uuid.uuid4())
     random.seed(_seed)
@@ -108,7 +97,7 @@ def run(_run, _seed, nr_of_runs_per_config, nr_samples_train, mask_probability, 
 
     # run multiple training sessions as per configuration of elo ensemble
     run_count = 0
-    while run_count < nr_of_runs_per_config:
+    while run_count < nr_runs_per_config:
         elo_training_exp.add_config(
             meta_experiment=meta_uuid,
             train_data_set=train_set_mask,
