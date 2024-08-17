@@ -1,7 +1,0 @@
-{
-  "mask_probability": 0.5,
-  "nr_samples_test": 50,
-  "nr_samples_train": 600,
-  "seed": 700803646,
-  "test_step": 20
-}

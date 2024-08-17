@@ -1,5 +1,0 @@
-INFO - single_hfd_random_tree_dataset - Running command 'run'
-INFO - single_hfd_random_tree_dataset - Started run with ID "46"
-Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/single-hfd-tree/src/train_data_set.txt.
-Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/single-hfd-tree/src/test_data_set.txt.
-INFO - single_hfd_random_tree_dataset - Completed after 0:00:00
