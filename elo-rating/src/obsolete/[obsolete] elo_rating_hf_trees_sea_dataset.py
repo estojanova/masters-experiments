@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import csv
+import os
 import random
 import numpy as np
 from river import tree
@@ -9,22 +11,25 @@ from sacred.observers import MongoObserver
 
 from sacred import Experiment
 
-ex = Experiment()
+ex = Experiment(name="elo_rating_hf_trees_sea_dataset")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
-ex.observers.append(FileStorageObserver('../runs'))
+ex.observers.append(FileStorageObserver('../../runs'))
 
 
 @ex.config
 def cfg():
+    meta_experiment = 'none'
     mean_rating = 1500
     rating_width = 400
     k_factor = 64
-    nr_learners = 8
-    nr_samples_train = 200
+    nr_learners = 3
+    nr_samples_train = 600
     mask_probability = 0.5
     nr_samples_test = 50
     test_step = 20
+    generate_pairs_strategy = 'random'
+    pick_pairs_strategy = 'random_subset'
 
 
 @dataclass
@@ -59,24 +64,35 @@ def generate_dataset_with_mask(_rnd, _seed, nr_samples: int, mask_prob: float):
     return masked
 
 
-def generate_pairs(_rnd, ensemble):
-    # works only for even nr of elements !
-    all_ids = list(range(0, len(ensemble)))
+def generate_pairs_random(_rnd, ensemble):
+    ensemble_length = len(ensemble)
+    all_ids = list(range(0, ensemble_length))
     _rnd.shuffle(all_ids)
+    # randomly remove 1 element from tail if odd number
+    if ensemble_length % 2 == 1:
+        all_ids.pop()
     id_iterator = iter(all_ids)
     pairs = []
     for id1, id2 in zip(id_iterator, id_iterator):
-        # print(id1, id2)
         pairs.append((ensemble[id1], ensemble[id2]))
-    return _rnd.sample(pairs, _rnd.randrange(len(pairs)))
+    return pairs
 
 
-def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test):
+def pick_pairs(_rnd, pairs, pick_pairs_strategy):
+    if pick_pairs_strategy == 'random_subset':
+        return _rnd.sample(pairs, _rnd.randrange(len(pairs) + 1))
+    if pick_pairs_strategy == 'all':
+        return pairs
+    raise Exception("No pick_pairs_strategy provided")
+
+
+def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test,
+                   generate_pairs_strategy, pick_pairs_strategy):
     step = 0
-
     for x, y in data_set:
-        pairs = generate_pairs(_rnd, ensemble)
-        for (learner1, learner2) in pairs:
+        all_pairs = generate_pairs_random(_rnd, ensemble)
+        play_pairs = pick_pairs(_rnd, all_pairs, pick_pairs_strategy)
+        for (learner1, learner2) in play_pairs:
             prediction1 = learner1.model.predict_one(x)
             prediction2 = learner2.model.predict_one(x)
             if y is None:
@@ -88,15 +104,18 @@ def train_ensemble(_run, _rnd, k_factor, rating_width, data_set, ensemble, test_
                     learner1.games_tie += 1
                     learner2.games_tie += 1
                     continue
-                else:
-                    if learner1.rating > learner2.rating:
-                        learner2.model.learn_one(x, prediction1)
-                        learner1.games_won += 1
-                        learner2.games_lost += 1
-                    else:
-                        learner1.model.learn_one(x, prediction2)
-                        learner1.games_lost += 1
-                        learner2.games_won += 1
+                if learner1.rating > learner2.rating:
+                    learner2.model.learn_one(x, prediction1)
+                    learner1.games_won += 1
+                    learner2.games_lost += 1
+                    continue
+                if learner2.rating > learner1.rating:
+                    learner1.model.learn_one(x, prediction2)
+                    learner1.games_lost += 1
+                    learner2.games_won += 1
+                    continue
+                if learner1.rating == learner2.rating:
+                    continue
             else:
                 learner_1_is_correct = (prediction1 is not None) and (prediction1 == y)
                 learner_2_is_correct = (prediction2 is not None) and (prediction2 == y)
@@ -137,9 +156,13 @@ def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
 
 
 def test_ensemble(_run, test_set, ensemble, step_nr, nr_samples_test):
+    test_ensemble_separate(_run, test_set, ensemble, step_nr, nr_samples_test)
+    test_ensemble_joint(_run, test_set, ensemble, step_nr, nr_samples_test)
+
+
+def test_ensemble_separate(_run, test_set, ensemble, step_nr, nr_samples_test):
     accuracy_template = "learner{}.test_accuracy"
     rating_template = "learner{}.rating"
-    accuracy = [0 for i in range(len(ensemble))]
     for learner in ensemble:
         nr_correct = 0
         for x, y in test_set:
@@ -149,9 +172,33 @@ def test_ensemble(_run, test_set, ensemble, step_nr, nr_samples_test):
         learner_accuracy = nr_correct / nr_samples_test
         _run.log_scalar(accuracy_template.format(learner.id), learner_accuracy, step_nr)
         _run.log_scalar(rating_template.format(learner.id), learner.rating, step_nr)
-        accuracy[learner.id] = nr_correct / nr_samples_test
-    print('Accuracy at ', step_nr, ': ', accuracy)
-    print('Rating at ', step_nr, ': ', list(l.rating for l in ensemble))
+
+
+def test_ensemble_joint(_run, test_set, ensemble, step_nr, nr_samples_test):
+    nr_correct_best_rated = 0
+    nr_correct_majority = 0
+    sorted_by_rating = sorted(ensemble, key=lambda l: l.rating, reverse=True)
+    for x, y in test_set:
+        y_pred_best_rated = sorted_by_rating[0].model.predict_one(x)
+        if y_pred_best_rated == y:
+            nr_correct_best_rated += 1
+        y_pred_majority = predict_by_majority(x, ensemble)
+        if y_pred_majority == y:
+            nr_correct_majority += 1
+    _run.log_scalar("ensemble.best_rated_accuracy", nr_correct_best_rated / nr_samples_test, step_nr)
+    _run.log_scalar("ensemble.majority_accuracy", nr_correct_majority / nr_samples_test, step_nr)
+
+
+def predict_by_majority(x, ensemble):
+    true_count = 0
+    false_count = 0
+    for learner in ensemble:
+        y_pred = learner.model.predict_one(x)
+        if y_pred:
+            true_count += 1
+        if not y_pred:
+            false_count += 1
+    return true_count >= false_count
 
 
 def log_initial_state(_run, ensemble):
@@ -159,14 +206,24 @@ def log_initial_state(_run, ensemble):
         log_train_metrics(_run, learner, 0)
 
 
+def write_artifact(_run, data, filename):
+    with open(filename, 'w') as f:
+        write = csv.writer(f)
+        write.writerows(data)
+    _run.add_artifact(filename=filename, name=filename)
+    os.remove(filename)
+
+
 @ex.automain
 def run(_run, _seed, mean_rating, rating_width, k_factor, nr_learners, nr_samples_train, mask_probability,
-        nr_samples_test, test_step):
+        nr_samples_test, test_step, generate_pairs_strategy, pick_pairs_strategy):
     random.seed(_seed)
     ensemble = list(
-        ModelWithElo(i, tree.HoeffdingTreeClassifier(), random.randint(mean_rating - 200, mean_rating + 200)) for i in
-        range(nr_learners))
-    data_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
-    test_set = list(synth.SEA(variant=0, seed=_seed).take(nr_samples_test))
-    log_initial_state(_run, ensemble)
-    train_ensemble(_run, random, k_factor, rating_width, data_set, ensemble, test_step, test_set, nr_samples_test)
+        ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
+    train_set = generate_dataset_with_mask(random, _seed, nr_samples_train, mask_probability)
+    test_set = list(synth.SEA(variant=0, seed=(_seed - 7)).take(nr_samples_test))
+    write_artifact(_run, train_set, 'train_data_set.txt')
+    write_artifact(_run, test_set, 'test_data_set.txt')
+    # log_initial_state(_run, ensemble)
+    train_ensemble(_run, random, k_factor, rating_width, train_set, ensemble, test_step, test_set, nr_samples_test,
+                   generate_pairs_strategy, pick_pairs_strategy)
