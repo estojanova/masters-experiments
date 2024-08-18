@@ -1,6 +1,7 @@
 import csv
 import os
 import random
+import uuid
 import numpy as np
 from river.datasets import synth
 from sacred.observers import FileStorageObserver
@@ -15,6 +16,11 @@ ex = Experiment(name="elo_sea_dataset")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
 ex.observers.append(FileStorageObserver('../runs'))
+
+
+@ex.config
+def cfg():
+    meta_experiment = str(uuid.uuid4())
 
 
 def write_artifact(_run, data, meta_uuid, filename):
@@ -72,18 +78,19 @@ def collect_metrics(meta_uuid, _run):
 
 
 @ex.automain
-def run(_run, _seed, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test, test_step, nr_learners,
+def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test,
+        test_step, nr_learners,
         pick_pairs_strategy):
     random.seed(_seed)
     # generate train & test sets
     train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test, mask_probability)
     train_set_mask = [(x, None) if random.random() < mask_probability else (x, y) for (x, y) in train_set]
-    write_artifact(_run, train_set_mask, _seed, 'train_data_set.txt')
-    write_artifact(_run, test_set, _seed, 'test_data_set.txt')
+    write_artifact(_run, train_set_mask, meta_experiment, 'train_data_set.txt')
+    write_artifact(_run, test_set, meta_experiment, 'test_data_set.txt')
 
     # run single learner for benchmark
     single_training_exp.add_config(
-        meta_experiment=_seed,
+        meta_experiment=meta_experiment,
         train_data_set=train_set_mask,
         test_data_set=test_set,
         nr_samples_train=nr_samples_train,
@@ -97,7 +104,7 @@ def run(_run, _seed, nr_runs_per_config, nr_samples_train, mask_probability, nr_
     run_count = 0
     while run_count < nr_runs_per_config:
         elo_training_exp.add_config(
-            meta_experiment=_seed,
+            meta_experiment=meta_experiment,
             train_data_set=train_set_mask,
             test_data_set=test_set,
             nr_samples_train=nr_samples_train,
@@ -110,4 +117,4 @@ def run(_run, _seed, nr_runs_per_config, nr_samples_train, mask_probability, nr_
             pick_pairs_strategy=pick_pairs_strategy)
         elo_training_exp.run()
         run_count += 1
-    collect_metrics(_seed, _run)
+    collect_metrics(meta_experiment, _run)
