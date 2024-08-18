@@ -81,7 +81,6 @@ def collect_metrics(meta_uuid, _run):
 def run(_run, _seed, n_num_features, n_cat_features, n_categories_per_feature, max_tree_depth, first_leaf_level,
         fraction_leaves_per_level, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test,
         test_step, nr_learners, pick_pairs_strategy):
-    meta_uuid = str(uuid.uuid4())
     random.seed(_seed)
     train_set, test_set = generate_data_sets(random, _seed, n_num_features, n_cat_features, n_categories_per_feature,
                                              max_tree_depth, first_leaf_level, fraction_leaves_per_level,
@@ -90,11 +89,11 @@ def run(_run, _seed, n_num_features, n_cat_features, n_categories_per_feature, m
     train_set_mask = [(x, None) if random.random() < mask_probability else (x, True if y == 1 else False) for (x, y) in
                       train_set]
     test_set_adapted = [(x, True if y == 1 else False) for (x, y) in test_set]
-    write_artifact(_run, train_set_mask, meta_uuid, 'train_data_set.txt')
-    write_artifact(_run, test_set_adapted, meta_uuid, 'test_data_set.txt')
+    write_artifact(_run, train_set_mask, _seed, 'train_data_set.txt')
+    write_artifact(_run, test_set_adapted, _seed, 'test_data_set.txt')
 
     single_training_exp.add_config(
-        meta_experiment=meta_uuid,
+        meta_experiment=_seed,
         train_data_set=train_set_mask,
         test_data_set=test_set_adapted,
         nr_samples_train=nr_samples_train,
@@ -107,7 +106,7 @@ def run(_run, _seed, n_num_features, n_cat_features, n_categories_per_feature, m
     run_count = 0
     while run_count < nr_runs_per_config:
         elo_training_exp.add_config(
-            meta_experiment=meta_uuid,
+            meta_experiment=_seed,
             train_data_set=train_set_mask,
             test_data_set=test_set_adapted,
             nr_samples_train=nr_samples_train,
@@ -120,5 +119,5 @@ def run(_run, _seed, n_num_features, n_cat_features, n_categories_per_feature, m
             pick_pairs_strategy=pick_pairs_strategy)
         elo_training_exp.run()
         run_count += 1
-    collect_metrics(meta_uuid, _run)
+    collect_metrics(_seed, _run)
 
