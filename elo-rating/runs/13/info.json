@@ -1,0 +1,120 @@
+{
+  "metrics": [
+    {
+      "id": "66c26f56b2a8beb7d1625dee",
+      "name": "learner0.train_correct"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625df0",
+      "name": "learner0.train_observed"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625df2",
+      "name": "learner0.games_played"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625df4",
+      "name": "learner0.games_won"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625df6",
+      "name": "learner0.games_lost"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625df8",
+      "name": "learner0.games_tie"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625dfa",
+      "name": "learner0.rating"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625dfc",
+      "name": "learner2.train_correct"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625dfe",
+      "name": "learner2.train_observed"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625e00",
+      "name": "learner2.games_played"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625e02",
+      "name": "learner2.games_won"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625e04",
+      "name": "learner2.games_lost"
+    },
+    {
+      "id": "66c26f56b2a8beb7d1625e06",
+      "name": "learner2.games_tie"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e08",
+      "name": "learner2.rating"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e0a",
+      "name": "learner1.train_correct"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e0c",
+      "name": "learner1.train_observed"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e0e",
+      "name": "learner1.games_played"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e10",
+      "name": "learner1.games_won"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e12",
+      "name": "learner1.games_lost"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e14",
+      "name": "learner1.games_tie"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e16",
+      "name": "learner1.rating"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e18",
+      "name": "learner0.test_accuracy"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e1a",
+      "name": "learner0.relative_rating"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e1c",
+      "name": "learner1.test_accuracy"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e1e",
+      "name": "learner1.relative_rating"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e20",
+      "name": "learner2.test_accuracy"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e22",
+      "name": "learner2.relative_rating"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e24",
+      "name": "ensemble.best_rated_accuracy"
+    },
+    {
+      "id": "66c26f57b2a8beb7d1625e26",
+      "name": "ensemble.majority_accuracy"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "mask_probability": 0.1,
+  "nr_learners": 10,
+  "nr_runs_per_config": 5,
+  "nr_samples_test": 50,
+  "nr_samples_train": 2000,
+  "pick_pairs_strategy": "random_subset",
+  "seed": 930007141,
+  "test_step": 20
+}
