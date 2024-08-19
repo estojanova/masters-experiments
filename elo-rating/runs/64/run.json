@@ -1,0 +1,93 @@
+{
+  "artifacts": [
+    "b830c608-e185-4747-b380-43dac36bc779_train_data_set.txt",
+    "b830c608-e185-4747-b380-43dac36bc779_test_data_set.txt"
+  ],
+  "command": "run",
+  "experiment": {
+    "base_dir": "/Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src",
+    "dependencies": [
+      "numpy==1.26.4",
+      "pymongo==4.7.3",
+      "sacred==0.8.5"
+    ],
+    "mainfile": "elo_sea_dataset.py",
+    "name": "elo_sea_dataset",
+    "repositories": [
+      {
+        "commit": "655f5b9b30d800957efad4d765b67464aae20d32",
+        "dirty": false,
+        "url": "https://github.com/estojanova/masters-experiments.git"
+      }
+    ],
+    "sources": [
+      [
+        "elo_sea_dataset.py",
+        "_sources/elo_sea_dataset_889cfcf0eab21b5413093526934a6513.py"
+      ]
+    ]
+  },
+  "heartbeat": "2024-08-19T14:03:02.476858",
+  "host": {
+    "ENV": {},
+    "cpu": "Apple M2",
+    "hostname": "Elenas-MacBook-Pro.local",
+    "os": [
+      "Darwin",
+      "macOS-14.6.1-arm64-arm-64bit"
+    ],
+    "python_version": "3.12.3"
+  },
+  "meta": {
+    "command": "run",
+    "config_updates": {
+      "mask_probability": 0.5,
+      "nr_learners": 3,
+      "nr_runs_per_config": 5,
+      "nr_samples_test": 50,
+      "nr_samples_train": 4000,
+      "pick_pairs_strategy": "all",
+      "test_step": 20
+    },
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "nr_runs_per_config=5",
+        "nr_samples_train=4000",
+        "mask_probability=0.5",
+        "nr_samples_test=50",
+        "test_step=20",
+        "nr_learners=3",
+        "pick_pairs_strategy=all"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2024-08-19T14:02:57.084573",
+  "status": "COMPLETED",
+  "stop_time": "2024-08-19T14:03:02.475099"
+}

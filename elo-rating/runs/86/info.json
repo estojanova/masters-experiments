@@ -1,0 +1,16 @@
+{
+  "metrics": [
+    {
+      "id": "66c35152b2a8beb7d162f361",
+      "name": "train_observed"
+    },
+    {
+      "id": "66c35152b2a8beb7d162f363",
+      "name": "train_correct"
+    },
+    {
+      "id": "66c35152b2a8beb7d162f365",
+      "name": "test_accuracy"
+    }
+  ]
+}

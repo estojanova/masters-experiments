@@ -1,0 +1,172 @@
+{
+  "metrics": [
+    {
+      "id": "66c35129b2a8beb7d162f18e",
+      "name": "learner0.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f190",
+      "name": "learner0.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f192",
+      "name": "learner1.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f194",
+      "name": "learner1.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f196",
+      "name": "learner2.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f198",
+      "name": "learner2.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f19a",
+      "name": "learner3.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f19c",
+      "name": "learner3.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f19e",
+      "name": "learner4.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1a0",
+      "name": "learner4.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1a2",
+      "name": "learner5.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1a4",
+      "name": "learner5.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1a6",
+      "name": "learner6.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1a8",
+      "name": "learner6.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1aa",
+      "name": "learner7.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1ac",
+      "name": "learner7.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1ae",
+      "name": "learner8.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1b0",
+      "name": "learner8.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1b2",
+      "name": "learner9.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1b4",
+      "name": "learner9.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1b6",
+      "name": "learner10.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1b8",
+      "name": "learner10.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1ba",
+      "name": "learner11.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1bc",
+      "name": "learner11.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1be",
+      "name": "learner12.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1c0",
+      "name": "learner12.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1c2",
+      "name": "learner13.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1c4",
+      "name": "learner13.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1c6",
+      "name": "learner14.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1c8",
+      "name": "learner14.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1ca",
+      "name": "learner15.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1cc",
+      "name": "learner15.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1ce",
+      "name": "learner16.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1d0",
+      "name": "learner16.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1d2",
+      "name": "learner17.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1d4",
+      "name": "learner17.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1d6",
+      "name": "learner18.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1d8",
+      "name": "learner18.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1da",
+      "name": "learner19.test_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1dc",
+      "name": "learner19.relative_rating"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1de",
+      "name": "ensemble.best_rated_accuracy"
+    },
+    {
+      "id": "66c35129b2a8beb7d162f1e0",
+      "name": "ensemble.majority_accuracy"
+    }
+  ]
+}
