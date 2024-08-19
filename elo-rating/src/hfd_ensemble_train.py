@@ -100,6 +100,7 @@ def train_pair(x, y, learner1: ModelWithElo, learner2: ModelWithElo, k_factor, r
 
 def train(_run, _rnd, k_factor, rating_width, train_set, ensemble, test_step, test_set, nr_samples_test,
           pick_pairs_strategy):
+    nr_learners = len(ensemble)
     step = 0
     for x, y in train_set:
         all_pairs = generate_pairs_random(_rnd, ensemble)
@@ -109,6 +110,7 @@ def train(_run, _rnd, k_factor, rating_width, train_set, ensemble, test_step, te
                 play_pair(x, learner1, learner2)
             else:
                 train_pair(x, y, learner1, learner2, k_factor, rating_width)
+            if nr_learners < 15:
                 log_train_metrics(_run, learner1, step)
                 log_train_metrics(_run, learner2, step)
         step += 1

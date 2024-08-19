@@ -1,0 +1,11 @@
+{
+  "mask_probability": 0.5,
+  "meta_experiment": "ae334f0a-197c-4f9e-a5dd-67e5e52ff785",
+  "nr_learners": 3,
+  "nr_runs_per_config": 5,
+  "nr_samples_test": 50,
+  "nr_samples_train": 1000,
+  "pick_pairs_strategy": "all",
+  "seed": 978067745,
+  "test_step": 20
+}

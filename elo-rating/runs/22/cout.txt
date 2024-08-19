@@ -1,0 +1,23 @@
+INFO - elo_sea_dataset - Running command 'run'
+INFO - elo_sea_dataset - Started run with ID "22"
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/ae334f0a-197c-4f9e-a5dd-67e5e52ff785_train_data_set.txt.
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/ae334f0a-197c-4f9e-a5dd-67e5e52ff785_test_data_set.txt.
+INFO - single_hfd_train - Running command 'run'
+INFO - single_hfd_train - Started run with ID "23"
+INFO - single_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "24"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "25"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "26"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "27"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "28"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_sea_dataset - Completed after 0:00:02
