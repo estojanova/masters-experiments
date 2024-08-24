@@ -1,0 +1,22 @@
+INFO - elo_random_tree_dataset - Running command 'run'
+INFO - elo_random_tree_dataset - Started run with ID "141"
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/fa73fc5f-615e-424d-9065-0f337b01448e_train_data_set.txt.
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/fa73fc5f-615e-424d-9065-0f337b01448e_test_data_set.txt.
+INFO - single_hfd_train - Running command 'run'
+INFO - single_hfd_train - Started run with ID "142"
+INFO - single_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train_all_labels - Running command 'run'
+INFO - elo_ensemble_hfd_train_all_labels - Started run with ID "143"
+INFO - elo_ensemble_hfd_train_all_labels - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train_all_labels - Running command 'run'
+INFO - elo_ensemble_hfd_train_all_labels - Started run with ID "144"
+INFO - elo_ensemble_hfd_train_all_labels - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train_all_labels - Running command 'run'
+INFO - elo_ensemble_hfd_train_all_labels - Started run with ID "145"
+INFO - elo_ensemble_hfd_train_all_labels - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train_all_labels - Running command 'run'
+INFO - elo_ensemble_hfd_train_all_labels - Started run with ID "146"
+INFO - elo_ensemble_hfd_train_all_labels - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train_all_labels - Running command 'run'
+INFO - elo_ensemble_hfd_train_all_labels - Started run with ID "147"
+INFO - elo_ensemble_hfd_train_all_labels - Completed after 0:00:01
