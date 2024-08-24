@@ -105,18 +105,14 @@ def train(_run, _rnd, k_factor, rating_width, train_set, ensemble, test_step, te
     for x, y in train_set:
         all_pairs = generate_pairs_random(_rnd, ensemble)
         play_pairs = pick_pairs(_rnd, all_pairs, pick_pairs_strategy)
-        if y is None:
-            for (learner1, learner2) in play_pairs:
+        for (learner1, learner2) in play_pairs:
+            if y is None:
                 play_pair(x, learner1, learner2)
-                if nr_learners < 15:
-                    log_train_metrics(_run, learner1, step)
-                    log_train_metrics(_run, learner2, step)
-        else:
-            for (learner1, learner2) in all_pairs:
+            else:
                 train_pair(x, y, learner1, learner2, k_factor, rating_width)
-                if nr_learners < 15:
-                    log_train_metrics(_run, learner1, step)
-                    log_train_metrics(_run, learner2, step)
+            if nr_learners < 15:
+                log_train_metrics(_run, learner1, step)
+                log_train_metrics(_run, learner2, step)
         step += 1
         if step % test_step == 0:
             test(_run, test_set, ensemble, step, nr_samples_test)
