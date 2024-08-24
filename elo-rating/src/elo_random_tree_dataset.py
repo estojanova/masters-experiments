@@ -10,6 +10,7 @@ from sacred.observers import MongoObserver
 from sacred import Experiment
 from hfd_ensemble_train import ex as elo_training_exp
 from hfd_single_train import ex as single_training_exp
+from hfd_ensemble_train_all_labels_used import ex as elo_training_ex_all_labels
 from pymongo import MongoClient
 
 ex = Experiment(name="elo_random_tree_dataset")
@@ -63,7 +64,7 @@ def collect_metrics(meta_uuid, _run):
                         "values")
                     for index, value in enumerate(single_accuracy):
                         _run.log_scalar("single.test_accuracy", value, index + 1)
-                if sub_run_name == "elo_ensemble_hfd_train":
+                if sub_run_name in ["elo_ensemble_hfd_train", "elo_ensemble_hfd_train_all_labels"]:
                     majority_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_accuracy"})[
                         0].get("values")
                     best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
@@ -85,7 +86,7 @@ def collect_metrics(meta_uuid, _run):
 @ex.automain
 def run(_run, _seed, meta_experiment, n_num_features, n_cat_features, n_categories_per_feature, max_tree_depth, first_leaf_level,
         fraction_leaves_per_level, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test,
-        test_step, nr_learners, pick_pairs_strategy):
+        test_step, nr_learners, pick_pairs_strategy, all_labels):
     random.seed(_seed)
     train_set, test_set = generate_data_sets(random, _seed, n_num_features, n_cat_features, n_categories_per_feature,
                                              max_tree_depth, first_leaf_level, fraction_leaves_per_level,
@@ -109,8 +110,9 @@ def run(_run, _seed, meta_experiment, n_num_features, n_cat_features, n_categori
     single_training_exp.run()
 
     run_count = 0
+    target_exp = elo_training_ex_all_labels if all_labels is True else elo_training_exp
     while run_count < nr_runs_per_config:
-        elo_training_exp.add_config(
+        target_exp.add_config(
             meta_experiment=meta_experiment,
             train_data_set=train_set_mask,
             test_data_set=test_set_adapted,
@@ -122,6 +124,6 @@ def run(_run, _seed, meta_experiment, n_num_features, n_cat_features, n_categori
             k_factor=64,
             nr_learners=nr_learners,
             pick_pairs_strategy=pick_pairs_strategy)
-        elo_training_exp.run()
+        target_exp.run()
         run_count += 1
     collect_metrics(meta_experiment, _run)
