@@ -8,10 +8,10 @@ from sacred.observers import MongoObserver
 
 from sacred import Experiment
 
-ex = Experiment(name="elo_ensemble_hfd_train_all_labels")
+ex = Experiment(name="elo_ensemble_hfd_train")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
-ex.observers.append(FileStorageObserver('../runs'))
+ex.observers.append(FileStorageObserver('../../runs'))
 
 
 @dataclass
@@ -48,7 +48,11 @@ def generate_pairs_random(_rnd, ensemble):
     return pairs
 
 
-def pick_pairs(_rnd, pairs, pick_pairs_strategy):
+def pick_pairs(_rnd, pairs, pick_pairs_strategy, fixed_nr):
+    if pick_pairs_strategy == 'none':
+        return []
+    if pick_pairs_strategy == 'fixed_nr':
+        return _rnd.sample(pairs, fixed_nr)
     if pick_pairs_strategy == 'random_subset':
         return _rnd.sample(pairs, _rnd.randrange(len(pairs) + 1))
     if pick_pairs_strategy == 'all':
@@ -99,27 +103,28 @@ def train_pair(x, y, learner1: ModelWithElo, learner2: ModelWithElo, k_factor, r
 
 
 def train(_run, _rnd, k_factor, rating_width, train_set, ensemble, test_step, test_set, nr_samples_test,
-          pick_pairs_strategy):
+          pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     nr_learners = len(ensemble)
     step = 0
     for x, y in train_set:
         all_pairs = generate_pairs_random(_rnd, ensemble)
-        play_pairs = pick_pairs(_rnd, all_pairs, pick_pairs_strategy)
         if y is None:
+            play_pairs = pick_pairs(_rnd, all_pairs, pick_play_pairs_strategy, number_of_pairs)
             for (learner1, learner2) in play_pairs:
                 play_pair(x, learner1, learner2)
                 if nr_learners < 15:
                     log_train_metrics(_run, learner1, step)
                     log_train_metrics(_run, learner2, step)
         else:
-            for (learner1, learner2) in all_pairs:
+            train_pairs = pick_pairs(_rnd, all_pairs, pick_train_pairs_strategy, number_of_pairs)
+            for (learner1, learner2) in train_pairs:
                 train_pair(x, y, learner1, learner2, k_factor, rating_width)
                 if nr_learners < 15:
                     log_train_metrics(_run, learner1, step)
                     log_train_metrics(_run, learner2, step)
-        step += 1
-        if step % test_step == 0:
-            test(_run, test_set, ensemble, step, nr_samples_test)
+    step += 1
+    if step % test_step == 0:
+        test(_run, test_set, ensemble, step, nr_samples_test)
 
 
 def test(_run, test_set, ensemble, step_nr, nr_samples_test):
@@ -156,8 +161,8 @@ def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
 
 @ex.automain
 def run(_run, _seed, meta_experiment, train_data_set, test_data_set, nr_samples_train, nr_samples_test, test_step,
-        mask_probability, rating_width, k_factor, nr_learners, pick_pairs_strategy):
+        mask_probability, rating_width, k_factor, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     random.seed(_seed)
     ensemble = list(ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
     train(_run, random, k_factor, rating_width, train_data_set, ensemble, test_step, test_data_set,
-          nr_samples_test, pick_pairs_strategy)
+          nr_samples_test, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs)
