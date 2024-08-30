@@ -94,7 +94,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
             rating_width=400,
             k_factor=64,
             nr_learners=nr_learners,
-            pick_train_pairs_strategy='all',
+            pick_train_pairs_strategy='random_subset',
             pick_play_pairs_strategy='none',
             number_of_pairs=0)
         elo_training_exp.run()
@@ -115,7 +115,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
             rating_width=400,
             k_factor=64,
             nr_learners=nr_learners,
-            pick_train_pairs_strategy='all',
+            pick_train_pairs_strategy='random_subset',
             pick_play_pairs_strategy='all',
             number_of_pairs=0)
         elo_training_exp.run()
