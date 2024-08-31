@@ -8,14 +8,14 @@ from sacred.observers import FileStorageObserver
 from sacred.observers import MongoObserver
 
 from sacred import Experiment
-from src.train_experiments.hfd_ensemble_train import ex as elo_training_exp
-from src.train_experiments.hfd_single_train import ex as single_training_exp
+from hfd_ensemble_train import ex as elo_training_exp
+from hfd_single_train import ex as single_training_exp
 from pymongo import MongoClient
 
-ex = Experiment(name="single_vs_elo_random_tree")
+ex = Experiment(name="single_vs_elo_sea")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
-ex.observers.append(FileStorageObserver('../../runs'))
+ex.observers.append(FileStorageObserver('../runs'))
 
 
 @ex.config
@@ -32,14 +32,9 @@ def write_artifact(_run, data, meta_uuid, filename):
     os.remove(filename)
 
 
-# not very efficient for start, but is OK for small datasets
-def generate_data_sets(_rnd, _seed, n_num_features: int, n_cat_features: int, n_categories_per_feature: int,
-                       max_tree_depth: int, first_leaf_level: int, fraction_leaves_per_level: float,
-                       nr_samples_train: int, nr_samples_test: int):
-    generator = synth.RandomTree(seed_tree=_seed, seed_sample=_seed, n_classes=2, n_num_features=n_num_features,
-                                 n_cat_features=n_cat_features, n_categories_per_feature=n_categories_per_feature,
-                                 max_tree_depth=max_tree_depth, first_leaf_level=first_leaf_level,
-                                 fraction_leaves_per_level=fraction_leaves_per_level)
+# not very efficient
+def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int, mask_prob: float):
+    generator = synth.SEA(variant=0, seed=_seed)
     generated = list(generator.take(nr_samples_train + nr_samples_test))
     return generated[:nr_samples_train], generated[nr_samples_train:]
 
@@ -83,24 +78,20 @@ def collect_metrics(meta_uuid, _run):
 
 
 @ex.automain
-def run(_run, _seed, meta_experiment, n_num_features, n_cat_features, n_categories_per_feature, max_tree_depth, first_leaf_level,
-        fraction_leaves_per_level, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test,
+def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test,
         test_step, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     random.seed(_seed)
-    train_set, test_set = generate_data_sets(random, _seed, n_num_features, n_cat_features, n_categories_per_feature,
-                                             max_tree_depth, first_leaf_level, fraction_leaves_per_level,
-                                             nr_samples_train, nr_samples_test)
-    # apply mask to train set to remove labels
-    train_set_mask = [(x, None) if random.random() < mask_probability else (x, True if y == 1 else False) for (x, y) in
-                      train_set]
-    test_set_adapted = [(x, True if y == 1 else False) for (x, y) in test_set]
+    # generate train & test sets
+    train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test, mask_probability)
+    train_set_mask = [(x, None) if random.random() < mask_probability else (x, y) for (x, y) in train_set]
     write_artifact(_run, train_set_mask, meta_experiment, 'train_data_set.txt')
-    write_artifact(_run, test_set_adapted, meta_experiment, 'test_data_set.txt')
+    write_artifact(_run, test_set, meta_experiment, 'test_data_set.txt')
 
+    # run single learner for benchmark
     single_training_exp.add_config(
         meta_experiment=meta_experiment,
         train_data_set=train_set_mask,
-        test_data_set=test_set_adapted,
+        test_data_set=test_set,
         nr_samples_train=nr_samples_train,
         nr_samples_test=nr_samples_test,
         test_step=test_step,
@@ -108,12 +99,13 @@ def run(_run, _seed, meta_experiment, n_num_features, n_cat_features, n_categori
     )
     single_training_exp.run()
 
+    # run multiple training sessions as per configuration of elo ensemble
     run_count = 0
     while run_count < nr_runs_per_config:
         elo_training_exp.add_config(
             meta_experiment=meta_experiment,
             train_data_set=train_set_mask,
-            test_data_set=test_set_adapted,
+            test_data_set=test_set,
             nr_samples_train=nr_samples_train,
             nr_samples_test=nr_samples_test,
             test_step=test_step,
@@ -122,8 +114,8 @@ def run(_run, _seed, meta_experiment, n_num_features, n_cat_features, n_categori
             k_factor=64,
             nr_learners=nr_learners,
             pick_train_pairs_strategy=pick_train_pairs_strategy,
-            pick_play_pairs_strategy=pick_play_pairs_strategy,
-            number_of_pairs=number_of_pairs)
+            pick_play_pairs_strategy = pick_play_pairs_strategy,
+            number_of_pairs = number_of_pairs)
         elo_training_exp.run()
         run_count += 1
     collect_metrics(meta_experiment, _run)

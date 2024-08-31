@@ -11,7 +11,7 @@ from sacred import Experiment
 ex = Experiment(name="elo_ensemble_hfd_train")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
-ex.observers.append(FileStorageObserver('../../runs'))
+ex.observers.append(FileStorageObserver('../runs'))
 
 
 @dataclass
@@ -122,9 +122,9 @@ def train(_run, _rnd, k_factor, rating_width, train_set, ensemble, test_step, te
                 if nr_learners < 15:
                     log_train_metrics(_run, learner1, step)
                     log_train_metrics(_run, learner2, step)
-    step += 1
-    if step % test_step == 0:
-        test(_run, test_set, ensemble, step, nr_samples_test)
+        step += 1
+        if step % test_step == 0:
+            test(_run, test_set, ensemble, step, nr_samples_test)
 
 
 def test(_run, test_set, ensemble, step_nr, nr_samples_test):
