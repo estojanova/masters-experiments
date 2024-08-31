@@ -6,4 +6,4 @@ python -m src.comparison_experiments.single_vs_elo_random_tree with n_num_featur
 python -m src.comparison_experiments.single_vs_elo_sea with nr_runs_per_config=5 nr_samples_train=1000 mask_probability=0.1 nr_samples_test=50 test_step=20 nr_learners=4 pick_train_pairs_strategy='random_subset' pick_play_pairs_strategy='all' number_of_pairs=0
 
 # elo_no_play_vs_elo_all_play_sea example
-python -m src.comparison_experiments.elo_no_play_vs_elo_all_play_sea with nr_runs_per_config=5 nr_samples_train=1000 mask_probability=0.1 nr_samples_test=50 test_step=20 nr_learners=10 seed=663222425
+python -m src.comparison_experiments.elo_no_play_vs_elo_all_play_sea with nr_runs_per_config=5 nr_samples_train=1000 mask_probability=0.1 nr_samples_test=50 test_step=20 nr_learners=10
