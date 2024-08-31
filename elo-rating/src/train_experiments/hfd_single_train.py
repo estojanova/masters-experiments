@@ -8,7 +8,7 @@ from sacred import Experiment
 ex = Experiment(name="single_hfd_train")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
-ex.observers.append(FileStorageObserver('../runs'))
+ex.observers.append(FileStorageObserver('./runs'))
 
 
 def train(_run, _rnd, data_set, test_step, learner, test_set, nr_samples_test):

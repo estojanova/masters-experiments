@@ -8,13 +8,13 @@ from sacred.observers import FileStorageObserver
 from sacred.observers import MongoObserver
 
 from sacred import Experiment
-from hfd_ensemble_train import ex as elo_training_exp
+from src.train_experiments.hfd_ensemble_train import ex as elo_training_exp
 from pymongo import MongoClient
 
 ex = Experiment(name="elo_all_play_vs_elo_no_play_sea")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
-ex.observers.append(FileStorageObserver('../runs'))
+ex.observers.append(FileStorageObserver('./runs'))
 
 
 @ex.config
