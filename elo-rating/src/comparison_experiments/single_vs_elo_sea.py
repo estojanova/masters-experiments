@@ -33,7 +33,7 @@ def write_artifact(_run, data, meta_uuid, filename):
 
 
 # not very efficient
-def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int, mask_prob: float):
+def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int):
     generator = synth.SEA(variant=0, seed=_seed)
     generated = list(generator.take(nr_samples_train + nr_samples_test))
     return generated[:nr_samples_train], generated[nr_samples_train:]
@@ -82,7 +82,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
         test_step, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     random.seed(_seed)
     # generate train & test sets
-    train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test, mask_probability)
+    train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test)
     train_set_mask = [(x, None) if random.random() < mask_probability else (x, y) for (x, y) in train_set]
     write_artifact(_run, train_set_mask, meta_experiment, 'train_data_set.txt')
     write_artifact(_run, test_set, meta_experiment, 'test_data_set.txt')
