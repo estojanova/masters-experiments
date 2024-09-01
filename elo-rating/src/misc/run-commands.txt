@@ -7,3 +7,6 @@ python -m src.comparison_experiments.single_vs_elo_sea with nr_runs_per_config=5
 
 # elo_no_play_vs_elo_all_play_sea example
 python -m src.comparison_experiments.elo_no_play_vs_elo_all_play_sea with nr_runs_per_config=5 nr_samples_train=1000 mask_probability=0.1 nr_samples_test=50 test_step=20 nr_learners=10
+
+# elo_no_play_vs_elo_all_play_sea_label_count example
+python -m src.comparison_experiments.elo_no_play_vs_elo_all_play_sea_label_count with nr_runs_per_config=5 nr_samples_train=1000 label_count=200 nr_samples_test=50 test_step=20 nr_learners=10
