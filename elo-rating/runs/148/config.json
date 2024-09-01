@@ -1,0 +1,10 @@
+{
+  "label_count": 100,
+  "meta_experiment": "851fca04-a973-4693-89d9-5dbb8f694066",
+  "nr_learners": 10,
+  "nr_runs_per_config": 5,
+  "nr_samples_test": 50,
+  "nr_samples_train": 500,
+  "seed": 396819126,
+  "test_step": 20
+}

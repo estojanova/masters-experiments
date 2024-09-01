@@ -1,0 +1,68 @@
+{
+  "artifacts": [],
+  "command": "run",
+  "experiment": {
+    "base_dir": "/Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/train_experiments",
+    "dependencies": [
+      "numpy==1.26.4",
+      "sacred==0.8.5"
+    ],
+    "mainfile": "hfd_ensemble_train.py",
+    "name": "elo_ensemble_hfd_train",
+    "repositories": [
+      {
+        "commit": "abc94d43c85addee48e878cc4726bb3ec4d5d11e",
+        "dirty": true,
+        "url": "https://github.com/estojanova/masters-experiments.git"
+      }
+    ],
+    "sources": [
+      [
+        "hfd_ensemble_train.py",
+        "_sources/hfd_ensemble_train_91629e4ea44ce89e6507e6cf6b4ea469.py"
+      ]
+    ]
+  },
+  "heartbeat": "2024-09-01T22:54:45.417330",
+  "host": {
+    "ENV": {},
+    "cpu": "Apple M2",
+    "hostname": "Elenas-MacBook-Pro.local",
+    "os": [
+      "Darwin",
+      "macOS-14.6.1-arm64-arm-64bit"
+    ],
+    "python_version": "3.12.3"
+  },
+  "meta": {
+    "command": "run",
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2024-09-01T22:54:44.611674",
+  "status": "COMPLETED",
+  "stop_time": "2024-09-01T22:54:45.415393"
+}

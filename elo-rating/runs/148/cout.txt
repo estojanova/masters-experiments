@@ -1,0 +1,35 @@
+INFO - elo_no_play_vs_elo_all_play_sea_label_count - Running command 'run'
+INFO - elo_no_play_vs_elo_all_play_sea_label_count - Started run with ID "148"
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/851fca04-a973-4693-89d9-5dbb8f694066_train_data_set.txt.
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/851fca04-a973-4693-89d9-5dbb8f694066_test_data_set.txt.
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "149"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "150"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "151"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "152"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "153"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "154"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "155"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "156"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "157"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "158"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:00
+INFO - elo_no_play_vs_elo_all_play_sea_label_count - Completed after 0:00:05
