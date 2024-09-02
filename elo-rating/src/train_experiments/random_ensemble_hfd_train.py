@@ -62,7 +62,7 @@ def play_pair( _rnd, x, learner1: Model, learner2: Model):
         learner1.games_tie += 1
         learner2.games_tie += 1
         return
-    winner = _rnd.sample([learner1, learner2], 1)
+    winner = _rnd.sample([learner1, learner2], 1)[0]
     if winner.id == learner1.id:
         learner2.model.learn_one(x, prediction1)
         learner1.games_won += 1
