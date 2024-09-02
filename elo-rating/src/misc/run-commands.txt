@@ -10,3 +10,7 @@ python -m src.comparison_experiments.elo_no_play_vs_elo_all_play_sea with nr_run
 
 # elo_no_play_vs_elo_all_play_sea_label_count example
 python -m src.comparison_experiments.elo_no_play_vs_elo_all_play_sea_label_count with nr_runs_per_config=5 nr_samples_train=1000 label_count=200 nr_samples_test=50 test_step=20 nr_learners=10
+
+# random_no_play_vs_random_all_play_sea_label_count example
+python -m src.comparison_experiments.random_no_play_vs_random_all_play_sea_label_count with nr_runs_per_config=5 nr_samples_train=500 label_count=100 nr_samples_test=50 test_step=20 nr_learners=10
+

@@ -11,7 +11,7 @@ from sacred import Experiment
 from src.train_experiments.random_ensemble_hfd_train import ex as random_ensemble_training_exp
 from pymongo import MongoClient
 
-ex = Experiment(name="elo_no_play_vs_elo_all_play_sea_label_count")
+ex = Experiment(name="random_no_play_vs_random_all_play_sea_label_count")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
 ex.observers.append(FileStorageObserver('./runs'))
@@ -48,23 +48,16 @@ def collect_metrics(meta_uuid, play_pairs_strategy, _run):
             sub_runs = runs.find(
                 {"config.meta_experiment": meta_uuid, "config.pick_play_pairs_strategy": play_pairs_strategy})
             majority_accuracies = []
-            best_rated_accuracies = []
 
             for sub_run in sub_runs:
                 sub_run_id = sub_run.get("_id")
                 majority_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_accuracy"})[
                         0].get("values")
-                best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
-                        0].get("values")
                 majority_accuracies.append(majority_accuracy)
-                best_rated_accuracies.append(best_rated_accuracy)
 
             average_majority_accuracy = np.mean(np.array(majority_accuracies), axis=0)
-            average_best_rated_accuracy = np.mean(np.array(best_rated_accuracies), axis=0)
             for index, value in enumerate(average_majority_accuracy.tolist()):
                 _run.log_scalar("ensemble_{}.average_majority_accuracy".format(play_pairs_strategy), value, index + 1)
-            for index, value in enumerate(average_best_rated_accuracy.tolist()):
-                _run.log_scalar("ensemble_{}.average_best_rated_accuracy".format(play_pairs_strategy), value, index + 1)
 
     except Exception as e:
         raise Exception("Error collecting data from Mongo: ", e)
