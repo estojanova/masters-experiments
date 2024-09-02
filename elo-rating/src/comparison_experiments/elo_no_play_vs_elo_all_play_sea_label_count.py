@@ -8,7 +8,7 @@ from sacred.observers import FileStorageObserver
 from sacred.observers import MongoObserver
 
 from sacred import Experiment
-from src.train_experiments.hfd_ensemble_train import ex as elo_training_exp
+from src.train_experiments.elo_ensemble_hfd_train import ex as elo_training_exp
 from pymongo import MongoClient
 
 ex = Experiment(name="elo_no_play_vs_elo_all_play_sea_label_count")
