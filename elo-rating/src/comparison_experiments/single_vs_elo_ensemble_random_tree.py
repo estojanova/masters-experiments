@@ -104,7 +104,7 @@ def run(_run, _seed, meta_experiment, n_num_features, n_cat_features, n_categori
         nr_samples_train=nr_samples_train,
         nr_samples_test=nr_samples_test,
         test_step=test_step,
-        mask_info='prob-' + mask_probability,
+        mask_info='prob-' + str(mask_probability),
     )
     single_training_exp.run()
 
@@ -117,7 +117,7 @@ def run(_run, _seed, meta_experiment, n_num_features, n_cat_features, n_categori
             nr_samples_train=nr_samples_train,
             nr_samples_test=nr_samples_test,
             test_step=test_step,
-            mask_info='prob-' + mask_probability,
+            mask_info='prob-' + str(mask_probability),
             rating_width=400,
             k_factor=64,
             nr_learners=nr_learners,

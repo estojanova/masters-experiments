@@ -95,7 +95,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
         nr_samples_train=nr_samples_train,
         nr_samples_test=nr_samples_test,
         test_step=test_step,
-        mask_info='prob-' + mask_probability,
+        mask_info='prob-' + str(mask_probability),
     )
     single_training_exp.run()
 
@@ -109,7 +109,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
             nr_samples_train=nr_samples_train,
             nr_samples_test=nr_samples_test,
             test_step=test_step,
-            mask_info=mask_probability,
+            mask_info='prob-' + str(mask_probability),
             nr_learners=nr_learners,
             pick_train_pairs_strategy=pick_train_pairs_strategy,
             pick_play_pairs_strategy = pick_play_pairs_strategy,

@@ -90,7 +90,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, labe
             nr_samples_train=nr_samples_train,
             nr_samples_test=nr_samples_test,
             test_step=test_step,
-            mask_info='label-' + label_count,
+            mask_info='label-' + str(label_count),
             rating_width=400,
             k_factor=64,
             nr_learners=nr_learners,
