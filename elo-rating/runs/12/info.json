@@ -1,0 +1,88 @@
+{
+  "metrics": [
+    {
+      "id": "66d7863a718900fca01e51b5",
+      "name": "learner0.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51b7",
+      "name": "learner1.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51b9",
+      "name": "learner2.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51bb",
+      "name": "learner3.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51bd",
+      "name": "learner4.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51bf",
+      "name": "learner5.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51c1",
+      "name": "learner6.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51c3",
+      "name": "learner7.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51c5",
+      "name": "learner8.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51c7",
+      "name": "learner9.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51c9",
+      "name": "learner10.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51cb",
+      "name": "learner11.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51cd",
+      "name": "learner12.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51cf",
+      "name": "learner13.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51d1",
+      "name": "learner14.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51d3",
+      "name": "learner15.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51d5",
+      "name": "learner16.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51d7",
+      "name": "learner17.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51d9",
+      "name": "learner18.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51db",
+      "name": "learner19.test_accuracy"
+    },
+    {
+      "id": "66d7863a718900fca01e51dd",
+      "name": "ensemble.majority_accuracy"
+    }
+  ]
+}
