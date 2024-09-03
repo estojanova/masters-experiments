@@ -12,7 +12,7 @@ from src.train_experiments.random_ensemble_hfd_train import ex as ensemble_train
 from src.train_experiments.single_hfd_train import ex as single_training_exp
 from pymongo import MongoClient
 
-ex = Experiment(name="single_vs_random_ensemble_sea")
+ex = Experiment(name="single_vs_random_ensemble_sea_label_count")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
 ex.observers.append(FileStorageObserver('./runs'))
@@ -78,12 +78,12 @@ def collect_metrics(meta_uuid, _run):
 
 
 @ex.automain
-def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test,
+def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, label_count, nr_samples_test,
         test_step, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     random.seed(_seed)
     # generate train & test sets
     train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test)
-    train_set_mask = [(x, None) if random.random() < mask_probability else (x, y) for (x, y) in train_set]
+    train_set_mask = train_set[:label_count] + [(x, None) for (x,y) in train_set[label_count:]]
     write_artifact(_run, train_set_mask, meta_experiment, 'train_data_set.txt')
     write_artifact(_run, test_set, meta_experiment, 'test_data_set.txt')
 
@@ -95,7 +95,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
         nr_samples_train=nr_samples_train,
         nr_samples_test=nr_samples_test,
         test_step=test_step,
-        mask_info='prob-' + str(mask_probability),
+        mask_info='label-' + str(label_count),
     )
     single_training_exp.run()
 
@@ -109,7 +109,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
             nr_samples_train=nr_samples_train,
             nr_samples_test=nr_samples_test,
             test_step=test_step,
-            mask_info='prob-' + str(mask_probability),
+            mask_info='label-' + str(label_count),
             nr_learners=nr_learners,
             pick_train_pairs_strategy=pick_train_pairs_strategy,
             pick_play_pairs_strategy = pick_play_pairs_strategy,
