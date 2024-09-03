@@ -141,7 +141,7 @@ def log_train_metrics(_run, learner: Model, step_nr: int):
 
 @ex.automain
 def run(_run, _seed, meta_experiment, train_data_set, test_data_set, nr_samples_train, nr_samples_test, test_step,
-        mask_probability, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
+        mask_info, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     random.seed(_seed)
     ensemble = list(Model(i, tree.HoeffdingTreeClassifier()) for i in range(nr_learners))
     train(_run, random, train_data_set, ensemble, test_step, test_data_set,

@@ -40,7 +40,7 @@ def test(_run, test_set, learner, step_nr, nr_samples_test):
 
 
 @ex.automain
-def run(_run, _seed, meta_experiment, train_data_set, test_data_set, nr_samples_train, mask_probability,
+def run(_run, _seed, meta_experiment, train_data_set, test_data_set, nr_samples_train, mask_info,
         nr_samples_test, test_step):
     learner = tree.HoeffdingTreeClassifier()
     train(_run, random, train_data_set, test_step, learner, test_data_set, nr_samples_test)

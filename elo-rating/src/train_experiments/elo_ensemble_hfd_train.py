@@ -161,7 +161,7 @@ def log_train_metrics(_run, learner: ModelWithElo, step_nr: int):
 
 @ex.automain
 def run(_run, _seed, meta_experiment, train_data_set, test_data_set, nr_samples_train, nr_samples_test, test_step,
-        mask_probability, rating_width, k_factor, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
+        mask_info, rating_width, k_factor, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     random.seed(_seed)
     ensemble = list(ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
     train(_run, random, k_factor, rating_width, train_data_set, ensemble, test_step, test_data_set,
