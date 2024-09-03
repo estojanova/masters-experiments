@@ -12,7 +12,7 @@ from src.train_experiments.elo_ensemble_hfd_train import ex as elo_training_exp
 from src.train_experiments.single_hfd_train import ex as single_training_exp
 from pymongo import MongoClient
 
-ex = Experiment(name="single_vs_elo_ensemble_sea")
+ex = Experiment(name="single_vs_elo_ensemble_sea_label_count")
 ex.observers.append(MongoObserver(url='mongodb://mongo_user:mongo_password@127.0.0.1:27017/sacred?authSource=admin',
                                   db_name='sacred'))
 ex.observers.append(FileStorageObserver('./runs'))
