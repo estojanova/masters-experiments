@@ -48,7 +48,6 @@ def collect_metrics(meta_uuid, _run):
             metrics = database["metrics"]
             sub_runs = runs.find({"config.meta_experiment": meta_uuid})
             majority_accuracies = []
-            best_rated_accuracies = []
 
             for sub_run in sub_runs:
                 sub_run_id = sub_run.get("_id")
@@ -58,20 +57,14 @@ def collect_metrics(meta_uuid, _run):
                         "values")
                     for index, value in enumerate(single_accuracy):
                         _run.log_scalar("single.test_accuracy", value, index + 1)
-                if sub_run_name in ["elo_ensemble_hfd_train", "elo_ensemble_hfd_train_all_labels"]:
+                if sub_run_name == "random_ensemble_hfd_train":
                     majority_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_accuracy"})[
                         0].get("values")
-                    best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
-                        0].get("values")
                     majority_accuracies.append(majority_accuracy)
-                    best_rated_accuracies.append(best_rated_accuracy)
 
             average_majority_accuracy = np.mean(np.array(majority_accuracies), axis=0)
-            average_best_rated_accuracy = np.mean(np.array(best_rated_accuracies), axis=0)
             for index, value in enumerate(average_majority_accuracy.tolist()):
                 _run.log_scalar("ensemble.average_majority_accuracy", value, index + 1)
-            for index, value in enumerate(average_best_rated_accuracy.tolist()):
-                _run.log_scalar("ensemble.average_best_rated_accuracy", value, index + 1)
 
     except Exception as e:
         raise Exception("Error collecting data from Mongo: ", e)

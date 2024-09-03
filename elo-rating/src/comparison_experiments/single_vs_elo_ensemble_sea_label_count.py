@@ -58,7 +58,7 @@ def collect_metrics(meta_uuid, _run):
                         "values")
                     for index, value in enumerate(single_accuracy):
                         _run.log_scalar("single.test_accuracy", value, index + 1)
-                if sub_run_name in ["elo_ensemble_hfd_train", "elo_ensemble_hfd_train_all_labels"]:
+                if sub_run_name == "elo_ensemble_hfd_train":
                     majority_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_accuracy"})[
                         0].get("values")
                     best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
