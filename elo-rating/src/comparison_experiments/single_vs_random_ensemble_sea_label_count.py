@@ -36,7 +36,7 @@ def write_artifact(_run, data, meta_uuid, filename):
 def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int):
     generator = synth.SEA(variant=0, seed=_seed)
     generated = list(generator.take(nr_samples_train + nr_samples_test))
-    return generated[:nr_samples_train], generated[nr_samples_train:]
+    return generated[nr_samples_test:], generated[:nr_samples_test]
 
 
 def collect_metrics(meta_uuid, _run):
