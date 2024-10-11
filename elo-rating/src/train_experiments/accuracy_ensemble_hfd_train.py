@@ -23,7 +23,7 @@ class Model:
     games_lost: int = 0
     games_won: int = 0
     games_tie: int = 0
-    test_accuracy: int = 0
+    validation_accuracy: int = 0
 
 
 def generate_pairs_random(_rnd, ensemble):
@@ -52,7 +52,7 @@ def pick_pairs(_rnd, pairs, pick_pairs_strategy, fixed_nr):
     raise Exception("No pick_pairs_strategy provided")
 
 
-def play_pair( _rnd, x, learner1: Model, learner2: Model):
+def play_pair(_rnd, x, learner1: Model, learner2: Model):
     learner1.games_played += 1
     learner2.games_played += 1
     prediction1 = learner1.model.predict_one(x)
@@ -63,12 +63,12 @@ def play_pair( _rnd, x, learner1: Model, learner2: Model):
         learner1.games_tie += 1
         learner2.games_tie += 1
         return
-    if learner1.test_accuracy > learner2.test_accuracy:
+    if learner1.validation_accuracy > learner2.validation_accuracy:
         learner2.model.learn_one(x, prediction1)
         learner1.games_won += 1
         learner2.games_lost += 1
         return
-    if learner2.test_accuracy > learner1.test_accuracy:
+    if learner2.validation_accuracy > learner1.validation_accuracy:
         learner1.model.learn_one(x, prediction2)
         learner1.games_lost += 1
         learner2.games_won += 1
@@ -88,7 +88,7 @@ def train_pair(x, y, learner1: Model, learner2: Model):
     learner2.train_total_observed += 1
 
 
-def train(_run, _rnd, train_set, ensemble, test_step, test_set, nr_samples_test,
+def train(_run, _rnd, train_set, ensemble, test_step, test_set, validation_set, nr_samples_test, nr_samples_validation,
           pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     nr_learners = len(ensemble)
     step = 0
@@ -110,7 +110,26 @@ def train(_run, _rnd, train_set, ensemble, test_step, test_set, nr_samples_test,
                     log_train_metrics(_run, learner2, step)
         step += 1
         if step % test_step == 0:
+            validate(_run, validation_set, ensemble, step, nr_samples_validation)
             test(_run, test_set, ensemble, step, nr_samples_test)
+
+
+def validate(_run, validation_set, ensemble, step_nr, nr_samples_validation):
+    nr_learners = len(ensemble)
+    individual_correct_counts = list(0 for i in range(nr_learners))
+    majority_correct_count = 0
+    for x, y in validation_set:
+        predictions = list((learner.id, learner.model.predict_one(x)) for learner in ensemble)
+        true_count = 0
+        for (learner_id, prediction) in predictions:
+            individual_correct_counts[learner_id] += (1 if prediction is not None and prediction == y else 0)
+            true_count += (1 if prediction is True else 0)
+        majority_prediction = True if true_count >= (nr_learners / 2) else False
+        majority_correct_count += (1 if majority_prediction == y else 0)
+    for learner in ensemble:
+        learner.validation_accuracy = individual_correct_counts[learner.id] / nr_samples_validation
+        _run.log_scalar("learner{}.validation_accuracy".format(learner.id), learner.validation_accuracy, step_nr)
+    _run.log_scalar("ensemble.majority_validation_accuracy", majority_correct_count / nr_samples_validation, step_nr)
 
 
 def test(_run, test_set, ensemble, step_nr, nr_samples_test):
@@ -128,7 +147,7 @@ def test(_run, test_set, ensemble, step_nr, nr_samples_test):
     for learner in ensemble:
         learner.test_accuracy = individual_correct_counts[learner.id] / nr_samples_test
         _run.log_scalar("learner{}.test_accuracy".format(learner.id), learner.test_accuracy, step_nr)
-    _run.log_scalar("ensemble.majority_accuracy", majority_correct_count / nr_samples_test, step_nr)
+    _run.log_scalar("ensemble.majority_test_accuracy", majority_correct_count / nr_samples_test, step_nr)
 
 
 def log_train_metrics(_run, learner: Model, step_nr: int):
@@ -141,9 +160,9 @@ def log_train_metrics(_run, learner: Model, step_nr: int):
 
 
 @ex.automain
-def run(_run, _seed, meta_experiment, train_data_set, test_data_set, nr_samples_train, nr_samples_test, test_step,
+def run(_run, _seed, meta_experiment, train_data_set, test_data_set, validation_data_set, nr_samples_train, nr_samples_test, nr_samples_validation, test_step,
         mask_info, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     random.seed(_seed)
     ensemble = list(Model(i, tree.HoeffdingTreeClassifier()) for i in range(nr_learners))
-    train(_run, random, train_data_set, ensemble, test_step, test_data_set,
-          nr_samples_test, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs)
+    train(_run, random, train_data_set, ensemble, test_step, test_data_set, validation_data_set,
+          nr_samples_test, nr_samples_validation, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs)

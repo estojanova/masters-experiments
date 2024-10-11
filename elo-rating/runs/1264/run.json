@@ -1,0 +1,99 @@
+{
+  "artifacts": [
+    "278a9047-7725-47c9-830e-3216e2f7a1ee_train_data_set.txt",
+    "278a9047-7725-47c9-830e-3216e2f7a1ee_test_data_set.txt"
+  ],
+  "command": "run",
+  "experiment": {
+    "base_dir": "/Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/src/comparison_experiments",
+    "dependencies": [
+      "numpy==1.26.4",
+      "pymongo==4.7.3",
+      "sacred==0.8.5"
+    ],
+    "mainfile": "single_vs_elo_ensemble_sea_label_count.py",
+    "name": "single_vs_elo_ensemble_sea_label_count",
+    "repositories": [
+      {
+        "commit": "4f6fffcf1e5d57495350f29e708a6eb2f8aa5c52",
+        "dirty": true,
+        "url": "https://github.com/estojanova/masters-experiments.git"
+      }
+    ],
+    "sources": [
+      [
+        "single_vs_elo_ensemble_sea_label_count.py",
+        "_sources/single_vs_elo_ensemble_sea_label_count_5824166a2d12d3ce78fb912de496b7e1.py"
+      ]
+    ]
+  },
+  "heartbeat": "2024-10-11T22:22:31.903411",
+  "host": {
+    "ENV": {},
+    "cpu": "Apple M2",
+    "hostname": "Elenas-MacBook-Pro.local",
+    "os": [
+      "Darwin",
+      "macOS-14.6.1-arm64-arm-64bit"
+    ],
+    "python_version": "3.12.3"
+  },
+  "meta": {
+    "command": "run",
+    "config_updates": {
+      "label_count": 100,
+      "nr_learners": 6,
+      "nr_runs_per_config": 5,
+      "nr_samples_test": 50,
+      "nr_samples_train": 1000,
+      "number_of_pairs": 0,
+      "pick_play_pairs_strategy": "all",
+      "pick_train_pairs_strategy": "random_subset",
+      "seed": 198313697,
+      "test_step": 20
+    },
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "nr_runs_per_config=5",
+        "nr_samples_train=1000",
+        "label_count=100",
+        "nr_samples_test=50",
+        "test_step=20",
+        "nr_learners=6",
+        "pick_train_pairs_strategy=random_subset",
+        "pick_play_pairs_strategy=all",
+        "number_of_pairs=0",
+        "seed=198313697"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2024-10-11T22:22:22.626667",
+  "status": "COMPLETED",
+  "stop_time": "2024-10-11T22:22:31.901208"
+}

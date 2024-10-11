@@ -32,11 +32,10 @@ def write_artifact(_run, data, meta_uuid, filename):
     os.remove(filename)
 
 
-# not very efficient
-def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int):
+def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int, nr_samples_validation: int):
     generator = synth.SEA(variant=0, seed=_seed)
-    generated = list(generator.take(nr_samples_train + nr_samples_test))
-    return generated[nr_samples_test:], generated[:nr_samples_test]
+    generated = list(generator.take(nr_samples_test + nr_samples_validation + nr_samples_train))
+    return generated[:nr_samples_test], generated[nr_samples_test:nr_samples_test + nr_samples_validation], generated[nr_samples_test+nr_samples_validation:]
 
 
 def collect_metrics(meta_uuid, _run):
@@ -69,9 +68,9 @@ def collect_metrics(meta_uuid, _run):
             average_majority_accuracy = np.mean(np.array(majority_accuracies), axis=0)
             average_best_rated_accuracy = np.mean(np.array(best_rated_accuracies), axis=0)
             for index, value in enumerate(average_majority_accuracy.tolist()):
-                _run.log_scalar("ensemble.average_majority_accuracy", value, index + 1)
+                _run.log_scalar("ensemble.avg_majority_test_accuracy", value, index + 1)
             for index, value in enumerate(average_best_rated_accuracy.tolist()):
-                _run.log_scalar("ensemble.average_best_rated_accuracy", value, index + 1)
+                _run.log_scalar("ensemble.avg_best_rated_test_accuracy", value, index + 1)
 
     except Exception as e:
         raise Exception("Error collecting data from Mongo: ", e)
@@ -82,7 +81,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, labe
         test_step, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     random.seed(_seed)
     # generate train & test sets
-    train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test)
+    test_set, validation_set, train_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test, nr_samples_test)
     train_set_mask = train_set[:label_count] + [(x, None) for (x,y) in train_set[label_count:]]
     write_artifact(_run, train_set_mask, meta_experiment, 'train_data_set.txt')
     write_artifact(_run, test_set, meta_experiment, 'test_data_set.txt')
