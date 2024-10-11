@@ -1,0 +1,23 @@
+INFO - single_vs_elo_ensemble_sea - Running command 'run'
+INFO - single_vs_elo_ensemble_sea - Started run with ID "406"
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/9d4a9fde-cd7b-4b85-878c-2485917f2413_train_data_set.txt.
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/9d4a9fde-cd7b-4b85-878c-2485917f2413_test_data_set.txt.
+INFO - single_hfd_train - Running command 'run'
+INFO - single_hfd_train - Started run with ID "407"
+INFO - single_hfd_train - Completed after 0:00:00
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "408"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:01
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "409"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:01
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "410"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:01
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "411"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:01
+INFO - elo_ensemble_hfd_train - Running command 'run'
+INFO - elo_ensemble_hfd_train - Started run with ID "412"
+INFO - elo_ensemble_hfd_train - Completed after 0:00:01
+INFO - single_vs_elo_ensemble_sea - Completed after 0:00:11

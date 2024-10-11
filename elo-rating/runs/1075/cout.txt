@@ -1,0 +1,23 @@
+INFO - single_vs_accuracy_ensemble_sea_label_count - Running command 'run'
+INFO - single_vs_accuracy_ensemble_sea_label_count - Started run with ID "1075"
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/3b89ba46-b922-448e-85f7-6cc5446a7497_train_data_set.txt.
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/3b89ba46-b922-448e-85f7-6cc5446a7497_test_data_set.txt.
+INFO - single_hfd_train - Running command 'run'
+INFO - single_hfd_train - Started run with ID "1076"
+INFO - single_hfd_train - Completed after 0:00:00
+INFO - accuracy_ensemble_hfd_train - Running command 'run'
+INFO - accuracy_ensemble_hfd_train - Started run with ID "1077"
+INFO - accuracy_ensemble_hfd_train - Completed after 0:00:00
+INFO - accuracy_ensemble_hfd_train - Running command 'run'
+INFO - accuracy_ensemble_hfd_train - Started run with ID "1078"
+INFO - accuracy_ensemble_hfd_train - Completed after 0:00:00
+INFO - accuracy_ensemble_hfd_train - Running command 'run'
+INFO - accuracy_ensemble_hfd_train - Started run with ID "1079"
+INFO - accuracy_ensemble_hfd_train - Completed after 0:00:00
+INFO - accuracy_ensemble_hfd_train - Running command 'run'
+INFO - accuracy_ensemble_hfd_train - Started run with ID "1080"
+INFO - accuracy_ensemble_hfd_train - Completed after 0:00:00
+INFO - accuracy_ensemble_hfd_train - Running command 'run'
+INFO - accuracy_ensemble_hfd_train - Started run with ID "1081"
+INFO - accuracy_ensemble_hfd_train - Completed after 0:00:00
+INFO - single_vs_accuracy_ensemble_sea_label_count - Completed after 0:00:04

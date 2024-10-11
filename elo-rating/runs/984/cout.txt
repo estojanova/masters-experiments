@@ -1,0 +1,23 @@
+INFO - single_vs_random_ensemble_sea_label_count - Running command 'run'
+INFO - single_vs_random_ensemble_sea_label_count - Started run with ID "984"
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/bde05187-0ab0-43c3-a51b-8bac3f1ca5ff_train_data_set.txt.
+Added text/plain as content-type of artifact /Users/elenastojanova/Desktop/personal/masters-experiments/elo-rating/bde05187-0ab0-43c3-a51b-8bac3f1ca5ff_test_data_set.txt.
+INFO - single_hfd_train - Running command 'run'
+INFO - single_hfd_train - Started run with ID "985"
+INFO - single_hfd_train - Completed after 0:00:00
+INFO - random_ensemble_hfd_train - Running command 'run'
+INFO - random_ensemble_hfd_train - Started run with ID "986"
+INFO - random_ensemble_hfd_train - Completed after 0:00:00
+INFO - random_ensemble_hfd_train - Running command 'run'
+INFO - random_ensemble_hfd_train - Started run with ID "987"
+INFO - random_ensemble_hfd_train - Completed after 0:00:00
+INFO - random_ensemble_hfd_train - Running command 'run'
+INFO - random_ensemble_hfd_train - Started run with ID "988"
+INFO - random_ensemble_hfd_train - Completed after 0:00:00
+INFO - random_ensemble_hfd_train - Running command 'run'
+INFO - random_ensemble_hfd_train - Started run with ID "989"
+INFO - random_ensemble_hfd_train - Completed after 0:00:00
+INFO - random_ensemble_hfd_train - Running command 'run'
+INFO - random_ensemble_hfd_train - Started run with ID "990"
+INFO - random_ensemble_hfd_train - Completed after 0:00:00
+INFO - single_vs_random_ensemble_sea_label_count - Completed after 0:00:05

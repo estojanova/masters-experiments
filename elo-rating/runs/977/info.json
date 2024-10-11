@@ -1,0 +1,12 @@
+{
+  "metrics": [
+    {
+      "id": "670455dc8ac0570307d57975",
+      "name": "single.test_accuracy"
+    },
+    {
+      "id": "670455dc8ac0570307d57977",
+      "name": "ensemble.average_majority_accuracy"
+    }
+  ]
+}

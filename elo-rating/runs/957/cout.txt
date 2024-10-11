@@ -1,0 +1,3 @@
+INFO - single_hfd_train - Running command 'run'
+INFO - single_hfd_train - Started run with ID "957"
+INFO - single_hfd_train - Completed after 0:00:00

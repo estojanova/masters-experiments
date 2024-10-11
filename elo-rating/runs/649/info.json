@@ -1,0 +1,20 @@
+{
+  "metrics": [
+    {
+      "id": "670313a48ac0570307d450b8",
+      "name": "ensemble_none.average_majority_accuracy"
+    },
+    {
+      "id": "670313a48ac0570307d450ba",
+      "name": "ensemble_none.average_best_rated_accuracy"
+    },
+    {
+      "id": "670313a48ac0570307d450bc",
+      "name": "ensemble_all.average_majority_accuracy"
+    },
+    {
+      "id": "670313a48ac0570307d450be",
+      "name": "ensemble_all.average_best_rated_accuracy"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "metrics": [
+    {
+      "id": "6705acb1da2a8267af0d4d22",
+      "name": "learner3.train_correct"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d24",
+      "name": "learner3.train_observed"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d26",
+      "name": "learner3.games_played"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d28",
+      "name": "learner3.games_won"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d2a",
+      "name": "learner3.games_lost"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d2c",
+      "name": "learner3.games_tie"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d2e",
+      "name": "learner5.train_correct"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d30",
+      "name": "learner5.train_observed"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d32",
+      "name": "learner5.games_played"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d34",
+      "name": "learner5.games_won"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d36",
+      "name": "learner5.games_lost"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d38",
+      "name": "learner5.games_tie"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d3a",
+      "name": "learner4.train_correct"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d3c",
+      "name": "learner4.train_observed"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d3e",
+      "name": "learner4.games_played"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d40",
+      "name": "learner4.games_won"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d42",
+      "name": "learner4.games_lost"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d44",
+      "name": "learner4.games_tie"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d46",
+      "name": "learner2.train_correct"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d48",
+      "name": "learner2.train_observed"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d4a",
+      "name": "learner2.games_played"
+    },
+    {
+      "id": "6705acb1da2a8267af0d4d4c",
+      "name": "learner2.games_won"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d4e",
+      "name": "learner2.games_lost"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d51",
+      "name": "learner2.games_tie"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d54",
+      "name": "learner1.train_correct"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d56",
+      "name": "learner1.train_observed"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d58",
+      "name": "learner1.games_played"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d5a",
+      "name": "learner1.games_won"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d5c",
+      "name": "learner1.games_lost"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d5e",
+      "name": "learner1.games_tie"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d60",
+      "name": "learner0.train_correct"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d62",
+      "name": "learner0.train_observed"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d64",
+      "name": "learner0.games_played"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d66",
+      "name": "learner0.games_won"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d68",
+      "name": "learner0.games_lost"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d6a",
+      "name": "learner0.games_tie"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d6c",
+      "name": "learner0.test_accuracy"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d6e",
+      "name": "learner1.test_accuracy"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d70",
+      "name": "learner2.test_accuracy"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d72",
+      "name": "learner3.test_accuracy"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d74",
+      "name": "learner4.test_accuracy"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d76",
+      "name": "learner5.test_accuracy"
+    },
+    {
+      "id": "6705acb2da2a8267af0d4d78",
+      "name": "ensemble.majority_accuracy"
+    }
+  ]
+}
