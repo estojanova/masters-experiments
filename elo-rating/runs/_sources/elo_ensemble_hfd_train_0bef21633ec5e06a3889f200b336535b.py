@@ -146,7 +146,7 @@ def train_ensemble(_run, _rnd, ensemble: list[ModelWithElo], train_set, test_set
                 train_pair(x, y, learner1, learner2, k_factor, rating_width)
         step += 1
         if step % test_step == 0:
-            test_ensemble(_run, test_set, ensemble, step // test_step, nr_samples_test)
+            test_ensemble(_run, test_set, ensemble, step / test_step, nr_samples_test)
 
 
 @ex.automain

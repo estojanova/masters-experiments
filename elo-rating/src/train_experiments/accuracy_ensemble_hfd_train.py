@@ -88,8 +88,8 @@ def train_pair(x, y, learner1: Model, learner2: Model):
     learner2.train_total_observed += 1
 
 
-def train(_run, _rnd, train_set, ensemble, test_step, test_set, validation_set, nr_samples_test, nr_samples_validation,
-          pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
+def train_ensemble(_run, _rnd, train_set, ensemble, test_step, test_set, validation_set, nr_samples_test, nr_samples_validation,
+                   pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
     nr_learners = len(ensemble)
     step = 0
     for x, y in train_set:
@@ -161,8 +161,8 @@ def log_train_metrics(_run, learner: Model, step_nr: int):
 
 @ex.automain
 def run(_run, _seed, meta_experiment, train_data_set, test_data_set, validation_data_set, nr_samples_train, nr_samples_test, nr_samples_validation, test_step,
-        mask_info, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
+        mask_info, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, nr_pairs, nr_repeats):
     random.seed(_seed)
     ensemble = list(Model(i, tree.HoeffdingTreeClassifier()) for i in range(nr_learners))
-    train(_run, random, train_data_set, ensemble, test_step, test_data_set, validation_data_set,
-          nr_samples_test, nr_samples_validation, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs)
+    train_ensemble(_run, random, train_data_set, ensemble, test_step, test_data_set, validation_data_set,
+                   nr_samples_test, nr_samples_validation, pick_train_pairs_strategy, pick_play_pairs_strategy, nr_pairs)

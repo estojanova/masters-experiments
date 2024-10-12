@@ -1,0 +1,14 @@
+{
+  "label_count": 20,
+  "meta_experiment": "dfe40fd5-9c03-4ceb-ba3d-133a11eee5a4",
+  "nr_learners": 6,
+  "nr_pairs": 0,
+  "nr_repeats": 2,
+  "nr_runs_per_config": 1,
+  "nr_samples_test": 50,
+  "nr_samples_train": 500,
+  "pick_play_pairs_strategy": "all",
+  "pick_train_pairs_strategy": "random_subset",
+  "seed": 750278473,
+  "test_step": 20
+}

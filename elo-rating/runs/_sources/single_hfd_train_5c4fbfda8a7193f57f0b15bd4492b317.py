@@ -30,7 +30,7 @@ def train_single(_run, _rnd, data_set, test_step, learner: SingleLearner, test_s
             learner.model.learn_one(x, y)
         step += 1
         if step % test_step == 0:
-            test_single(_run, test_set, learner, step // test_step, nr_samples_test)
+            test_single(_run, test_set, learner, step / test_step, nr_samples_test)
 
 
 def test_single(_run, test_set, learner, step_nr, nr_samples_test):
