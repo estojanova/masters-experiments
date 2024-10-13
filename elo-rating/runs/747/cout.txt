@@ -1,4 +1,0 @@
-INFO - elo_ensemble_hfd_train - Running command 'run'
-WARNING - elo_ensemble_hfd_train - An error ocurred in the '<sacred.observers.file_storage.FileStorageObserver object at 0x167cf8200>' observer: [Errno 2] No such file or directory: 'runs/747/cout.txt'
-INFO - elo_ensemble_hfd_train - Started run with ID "747"
-INFO - elo_ensemble_hfd_train - Completed after 0:00:03
