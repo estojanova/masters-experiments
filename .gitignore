@@ -4,3 +4,6 @@
 
 # Ignore pycache files
 **/__pycache__/
+
+#Ignore sacred runs storage
+**/runs
