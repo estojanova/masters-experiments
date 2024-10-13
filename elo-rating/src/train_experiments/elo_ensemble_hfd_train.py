@@ -15,7 +15,7 @@ ex.observers.append(FileStorageObserver('./runs'))
 
 
 @dataclass
-class ModelWithElo:
+class EloLearner:
     id: int
     model: tree.HoeffdingTreeClassifier
     rating: float
@@ -27,7 +27,7 @@ class ModelWithElo:
     games_tie: int = 0
 
 
-def adjust_rating(k_factor, rating_width, model1: ModelWithElo, model2: ModelWithElo, result_model_1, result_model_2):
+def adjust_rating(k_factor, rating_width, model1: EloLearner, model2: EloLearner, result_model_1, result_model_2):
     expected_win_model_1 = np.round(1.0 / (1 + 10 ** ((model1.rating - model2.rating) / rating_width)), 3)
     expected_win_model_2 = 1 - expected_win_model_1
     model1.rating += k_factor * (result_model_1 - expected_win_model_1)
@@ -56,7 +56,7 @@ def pick_pairs(_rnd, pairs, pick_pairs_strategy, fixed_nr):
     raise Exception("No pick_pairs_strategy provided")
 
 
-def play_pair(x, learner1: ModelWithElo, learner2: ModelWithElo):
+def play_pair(x, learner1: EloLearner, learner2: EloLearner):
     learner1.games_played += 1
     learner2.games_played += 1
     prediction1 = learner1.model.predict_one(x)
@@ -79,7 +79,7 @@ def play_pair(x, learner1: ModelWithElo, learner2: ModelWithElo):
         return
 
 
-def train_pair(x, y, learner1: ModelWithElo, learner2: ModelWithElo, k_factor, rating_width):
+def train_pair(x, y, learner1: EloLearner, learner2: EloLearner, k_factor, rating_width):
     prediction1 = learner1.model.predict_one(x)
     prediction2 = learner2.model.predict_one(x)
     learner_1_is_correct = (prediction1 is not None) and (prediction1 == y)
@@ -98,7 +98,7 @@ def train_pair(x, y, learner1: ModelWithElo, learner2: ModelWithElo, k_factor, r
     learner2.train_total += 1
 
 
-def test_ensemble(_run, test_set, ensemble: list[ModelWithElo], step_nr, nr_samples_test):
+def test_ensemble(_run, test_set, ensemble: list[EloLearner], step_nr, nr_samples_test):
     nr_learners = len(ensemble)
     individual_correct_counts = [0 for _ in range(nr_learners)]
     majority_correct_count = 0
@@ -130,7 +130,7 @@ def test_ensemble(_run, test_set, ensemble: list[ModelWithElo], step_nr, nr_samp
     _run.log_scalar("ensemble.majority_accuracy", majority_correct_count / nr_samples_test, step_nr)
 
 
-def train_ensemble(_run, _rnd, ensemble: list[ModelWithElo], train_set, test_set, nr_samples_train, nr_samples_test,
+def train_ensemble(_run, _rnd, ensemble: list[EloLearner], train_set, test_set, nr_samples_train, nr_samples_test,
                    test_step, k_factor, rating_width, pick_train_pairs_strategy, pick_play_pairs_strategy, nr_pairs,
                    repeat):
     step = nr_samples_train * repeat
@@ -154,7 +154,7 @@ def run(_run, _seed, meta_experiment, train_data_set, test_data_set, nr_samples_
         mask_info, rating_width, k_factor, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy,
         nr_pairs, nr_repeats):
     random.seed(_seed)
-    ensemble = list(ModelWithElo(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
+    ensemble = list(EloLearner(i, tree.HoeffdingTreeClassifier(), 800) for i in range(nr_learners))
     for repeat in range(0, nr_repeats):
         train_ensemble(_run, random, ensemble, train_data_set, test_data_set, nr_samples_train, nr_samples_test,
                        test_step, k_factor, rating_width, pick_train_pairs_strategy, pick_play_pairs_strategy, nr_pairs,

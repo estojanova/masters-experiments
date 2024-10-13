@@ -31,11 +31,11 @@ def write_artifact(_run, data, meta_uuid, filename):
     os.remove(filename)
 
 
-# not very efficient
-def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int):
+def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int, nr_samples_validation: int):
     generator = synth.SEA(variant=0, seed=_seed)
-    generated = list(generator.take(nr_samples_train + nr_samples_test))
-    return generated[:nr_samples_train], generated[nr_samples_train:]
+    generated = list(generator.take(nr_samples_test + nr_samples_validation + nr_samples_train))
+    return (generated[:nr_samples_test], generated[nr_samples_test:nr_samples_test + nr_samples_validation],
+            generated[nr_samples_test + nr_samples_validation:])
 
 
 def collect_metrics(meta_uuid, play_pairs_strategy, _run):
@@ -53,9 +53,9 @@ def collect_metrics(meta_uuid, play_pairs_strategy, _run):
             for sub_run in sub_runs:
                 sub_run_id = sub_run.get("_id")
                 majority_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_accuracy"})[
-                        0].get("values")
+                    0].get("values")
                 best_rated_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.best_rated_accuracy"})[
-                        0].get("values")
+                    0].get("values")
                 majority_accuracies.append(majority_accuracy)
                 best_rated_accuracies.append(best_rated_accuracy)
 
@@ -72,17 +72,17 @@ def collect_metrics(meta_uuid, play_pairs_strategy, _run):
 
 @ex.automain
 def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask_probability, nr_samples_test,
-        test_step, nr_learners):
+        nr_samples_validation, test_step, nr_learners, nr_repeats):
     random.seed(_seed)
-    # generate train & test sets
-    train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test)
+    test_set, validation_set, train_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test,
+                                                             nr_samples_validation)
     train_set_mask = [(x, None) if random.random() < mask_probability else (x, y) for (x, y) in train_set]
     write_artifact(_run, train_set_mask, meta_experiment, 'train_data_set.txt')
     write_artifact(_run, test_set, meta_experiment, 'test_data_set.txt')
+    write_artifact(_run, test_set, meta_experiment, 'validation_data_set.txt')
 
     # run multiple training sessions as per configuration of elo ensemble with no play on unlabeled data points
-    run_count = 0
-    while run_count < nr_runs_per_config:
+    for count in range(0, nr_runs_per_config):
         elo_training_exp.add_config(
             meta_experiment=meta_experiment,
             train_data_set=train_set_mask,
@@ -96,14 +96,13 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
             nr_learners=nr_learners,
             pick_train_pairs_strategy='random_subset',
             pick_play_pairs_strategy='none',
-            number_of_pairs=0)
+            nr_pairs=0,
+            nr_repeats=nr_repeats)
         elo_training_exp.run()
-        run_count += 1
     collect_metrics(meta_experiment, "none", _run)
 
     # run multiple training sessions as per configuration of elo ensemble with all play on unlabeled data points
-    run_count = 0
-    while run_count < nr_runs_per_config:
+    for count in range(0, nr_runs_per_config):
         elo_training_exp.add_config(
             meta_experiment=meta_experiment,
             train_data_set=train_set_mask,
@@ -117,7 +116,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, mask
             nr_learners=nr_learners,
             pick_train_pairs_strategy='random_subset',
             pick_play_pairs_strategy='all',
-            number_of_pairs=0)
+            nr_pairs=0,
+            nr_repeats=nr_repeats)
         elo_training_exp.run()
-        run_count += 1
     collect_metrics(meta_experiment, "all", _run)

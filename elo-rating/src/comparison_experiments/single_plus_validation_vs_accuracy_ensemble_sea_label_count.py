@@ -33,11 +33,11 @@ def write_artifact(_run, data, meta_uuid, filename):
     os.remove(filename)
 
 
-# not very efficient
 def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int, nr_samples_validation: int):
     generator = synth.SEA(variant=0, seed=_seed)
     generated = list(generator.take(nr_samples_test + nr_samples_validation + nr_samples_train))
-    return generated[:nr_samples_test], generated[nr_samples_test:nr_samples_test + nr_samples_validation], generated[nr_samples_test+nr_samples_validation:]
+    return (generated[:nr_samples_test], generated[nr_samples_test:nr_samples_test + nr_samples_validation],
+            generated[nr_samples_test + nr_samples_validation:])
 
 
 def collect_metrics(meta_uuid, _run):
@@ -60,10 +60,12 @@ def collect_metrics(meta_uuid, _run):
                     for index, value in enumerate(single_accuracy):
                         _run.log_scalar("single.test_accuracy", value, index + 1)
                 if sub_run_name == "accuracy_ensemble_hfd_train":
-                    majority_test_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_test_accuracy"})[
-                        0].get("values")
-                    majority_validation_accuracy = metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_validation_accuracy"})[
-                        0].get("values")
+                    majority_test_accuracy = \
+                        metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_test_accuracy"})[
+                            0].get("values")
+                    majority_validation_accuracy = \
+                        metrics.find({"run_id": sub_run_id, "name": "ensemble.majority_validation_accuracy"})[
+                            0].get("values")
                     majority_test_accuracies.append(majority_test_accuracy)
                     majority_validation_accuracies.append(majority_validation_accuracy)
 
@@ -80,11 +82,12 @@ def collect_metrics(meta_uuid, _run):
 
 @ex.automain
 def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, label_count, nr_samples_test,
-        test_step, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
+        nr_samples_validation, test_step, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, nr_pairs,
+        nr_repeats):
     random.seed(_seed)
-    # generate train & test sets
-    test_set, validation_set, train_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test, nr_samples_test)
-    train_set_mask = train_set[:label_count] + [(x, None) for (x,y) in train_set[label_count:]]
+    test_set, validation_set, train_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test,
+                                                             nr_samples_validation)
+    train_set_mask = train_set[:label_count] + [(x, None) for (x, y) in train_set[label_count:]]
     train_set_single_learner = validation_set + train_set_mask
     write_artifact(_run, train_set_mask, meta_experiment, 'train_data_set.txt')
     write_artifact(_run, test_set, meta_experiment, 'test_data_set.txt')
@@ -99,26 +102,25 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, labe
         nr_samples_test=nr_samples_test,
         test_step=test_step,
         mask_info='label-' + str(label_count),
-    )
+        nr_repeats=nr_repeats)
     single_training_exp.run()
 
     # run multiple training sessions as per configuration of elo ensemble
-    run_count = 0
-    while run_count < nr_runs_per_config:
+    for count in range(0, nr_runs_per_config):
         ensemble_training_exp.add_config(
             meta_experiment=meta_experiment,
             train_data_set=train_set_mask,
             test_data_set=test_set,
-            validation_data_set = validation_set,
+            validation_data_set=validation_set,
             nr_samples_train=nr_samples_train,
             nr_samples_test=nr_samples_test,
-            nr_samples_validation = nr_samples_test,
+            nr_samples_validation=nr_samples_test,
             test_step=test_step,
             mask_info='label-' + str(label_count),
             nr_learners=nr_learners,
             pick_train_pairs_strategy=pick_train_pairs_strategy,
-            pick_play_pairs_strategy = pick_play_pairs_strategy,
-            number_of_pairs = number_of_pairs)
+            pick_play_pairs_strategy=pick_play_pairs_strategy,
+            nr_pairs=nr_pairs,
+            nr_repeats=nr_repeats)
         ensemble_training_exp.run()
-        run_count += 1
     collect_metrics(meta_experiment, _run)

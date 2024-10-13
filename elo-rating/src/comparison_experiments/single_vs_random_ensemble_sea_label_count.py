@@ -32,11 +32,11 @@ def write_artifact(_run, data, meta_uuid, filename):
     os.remove(filename)
 
 
-# not very efficient
-def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int):
+def generate_data_sets(_rnd, _seed, nr_samples_train: int, nr_samples_test: int, nr_samples_validation: int):
     generator = synth.SEA(variant=0, seed=_seed)
-    generated = list(generator.take(nr_samples_train + nr_samples_test))
-    return generated[nr_samples_test:], generated[:nr_samples_test]
+    generated = list(generator.take(nr_samples_test + nr_samples_validation + nr_samples_train))
+    return (generated[:nr_samples_test], generated[nr_samples_test:nr_samples_test + nr_samples_validation],
+            generated[nr_samples_test + nr_samples_validation:])
 
 
 def collect_metrics(meta_uuid, _run):
@@ -65,20 +65,21 @@ def collect_metrics(meta_uuid, _run):
             average_majority_accuracy = np.mean(np.array(majority_accuracies), axis=0)
             for index, value in enumerate(average_majority_accuracy.tolist()):
                 _run.log_scalar("ensemble.average_majority_accuracy", value, index + 1)
-
     except Exception as e:
         raise Exception("Error collecting data from Mongo: ", e)
 
 
 @ex.automain
 def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, label_count, nr_samples_test,
-        test_step, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy, number_of_pairs):
+        nr_samples_validation, test_step, nr_learners, pick_train_pairs_strategy, pick_play_pairs_strategy,
+        nr_pairs, nr_repeats):
     random.seed(_seed)
-    # generate train & test sets
-    train_set, test_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test)
-    train_set_mask = train_set[:label_count] + [(x, None) for (x,y) in train_set[label_count:]]
+    test_set, validation_set, train_set = generate_data_sets(random, _seed, nr_samples_train, nr_samples_test,
+                                                             nr_samples_validation)
+    train_set_mask = train_set[:label_count] + [(x, None) for (x, y) in train_set[label_count:]]
     write_artifact(_run, train_set_mask, meta_experiment, 'train_data_set.txt')
     write_artifact(_run, test_set, meta_experiment, 'test_data_set.txt')
+    write_artifact(_run, validation_set, meta_experiment, 'validation_data_set.txt')
 
     # run single learner for benchmark
     single_training_exp.add_config(
@@ -89,12 +90,11 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, labe
         nr_samples_test=nr_samples_test,
         test_step=test_step,
         mask_info='label-' + str(label_count),
-    )
+        nr_repeats=nr_repeats)
     single_training_exp.run()
 
     # run multiple training sessions as per configuration of elo ensemble
-    run_count = 0
-    while run_count < nr_runs_per_config:
+    for count in range(0, nr_runs_per_config):
         ensemble_training_exp.add_config(
             meta_experiment=meta_experiment,
             train_data_set=train_set_mask,
@@ -105,8 +105,9 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, labe
             mask_info='label-' + str(label_count),
             nr_learners=nr_learners,
             pick_train_pairs_strategy=pick_train_pairs_strategy,
-            pick_play_pairs_strategy = pick_play_pairs_strategy,
-            number_of_pairs = number_of_pairs)
+            pick_play_pairs_strategy=pick_play_pairs_strategy,
+            nr_pairs=nr_pairs,
+            nr_repeats=nr_repeats)
         ensemble_training_exp.run()
-        run_count += 1
+
     collect_metrics(meta_experiment, _run)
