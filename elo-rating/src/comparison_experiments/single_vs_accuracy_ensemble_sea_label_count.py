@@ -111,7 +111,7 @@ def run(_run, _seed, meta_experiment, nr_runs_per_config, nr_samples_train, labe
             validation_data_set=validation_set,
             nr_samples_train=nr_samples_train,
             nr_samples_test=nr_samples_test,
-            nr_samples_validation=nr_samples_test,
+            nr_samples_validation=nr_samples_validation,
             test_step=test_step,
             mask_info='label-' + str(label_count),
             nr_learners=nr_learners,
