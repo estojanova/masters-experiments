@@ -1,0 +1,19 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Masters Experiments
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Elena
+    family-names: Stojanova
+    email: estojanova86@gmail.com
+repository-code: >-
+  https://github.com/estojanova/masters-experiments/tree/main
+abstract: Experimental setup as part of my masters thesis
+license: MIT
+version: 1.0.0
+date-released: '2024-12-01'
