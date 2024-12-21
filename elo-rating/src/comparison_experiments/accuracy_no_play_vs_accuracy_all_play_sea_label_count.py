@@ -58,7 +58,7 @@ def collect_metrics(meta_uuid, play_pairs_strategy, _run):
 
             average_majority_accuracy = np.mean(np.array(majority_accuracies), axis=0)
             for index, value in enumerate(average_majority_accuracy.tolist()):
-                _run.log_scalar("ensemble_{}.avg_majority_test_accuracy".format(play_pairs_strategy), value, index + 1)
+                _run.log_scalar("acc_ensemble.{}_play.avg_majority_accuracy".format(play_pairs_strategy), value, index + 1)
 
     except Exception as e:
         raise Exception("Error collecting data from Mongo: ", e)

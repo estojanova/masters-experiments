@@ -72,9 +72,9 @@ def collect_metrics(meta_uuid, _run):
             avg_majority_test_accuracy = np.mean(np.array(majority_test_accuracies), axis=0)
             avg_majority_validation_accuracy = np.mean(np.array(majority_validation_accuracies), axis=0)
         for index, value in enumerate(avg_majority_test_accuracy.tolist()):
-            _run.log_scalar("ensemble.avg_majority_test_accuracy", value, index + 1)
+            _run.log_scalar("acc_ensemble.avg_majority_test_accuracy", value, index + 1)
         for index, value in enumerate(avg_majority_validation_accuracy.tolist()):
-            _run.log_scalar("ensemble.avg_majority_validation_accuracy", value, index + 1)
+            _run.log_scalar("acc_ensemble.avg_majority_val_accuracy", value, index + 1)
 
     except Exception as e:
         raise Exception("Error collecting metrics from Mongo: ", e)
